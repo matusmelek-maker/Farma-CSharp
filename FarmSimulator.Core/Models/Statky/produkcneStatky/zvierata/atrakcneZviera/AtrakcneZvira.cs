@@ -1,9 +1,6 @@
 ﻿using FarmSimulator.Core.Enums.AtrakcneZviera;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace FarmSimulator.Core.Models.Statky.produkcneStatky.zvierata.atrakcneZviera
+namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Zvierata.AtrakcneZviera
 {
     public class AtrakcneZviera : Zviera
     {

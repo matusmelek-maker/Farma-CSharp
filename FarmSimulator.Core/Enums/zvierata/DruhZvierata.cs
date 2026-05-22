@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FarmSimulator.Core.Enums.zvierata
+﻿namespace FarmSimulator.Core.Enums.Zvierata
 {
     public enum DruhZvierata
     {

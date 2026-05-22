@@ -1,14 +1,8 @@
-﻿using FarmSimulator.Core.Enums.statok;
-using FarmSimulator.Core.Enums.stromy;
+﻿
+using FarmSimulator.Core.Enums.Stromy;
 using FarmSimulator.Core.Models.Produkty;
-using FarmSimulator.Core.Models.Statky.produkcneStatky.rastliny.stromy;
-using System;
-using System.Collections.Generic;
-using System.Runtime.Intrinsics.X86;
-using System.Text;
 
-
-namespace FarmSimulator.Core.Models.Statky.produkcneStatky.rastliny.stromy
+namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Rastliny.Stromy
 {
     public class Strom : Rastlina
     {
@@ -22,7 +16,7 @@ namespace FarmSimulator.Core.Models.Statky.produkcneStatky.rastliny.stromy
         public event Action<Produkt>? OnOvocieVyprodukovane;
 
         public Strom(TypStromuInfo info)
-            : base(info.NazovObrazka, info.KupnaCena, info.PredajnaCena, true, info.TypTovaru, info.Zivotnost)
+            : base(info.NazovObrazka, info.KupnaCena, info.PredajnaCena, true, info.TypObchodnehoTovaru, info.Zivotnost)
         {
             this.Info = info;
         }

@@ -1,11 +1,11 @@
-﻿using FarmSimulator.Core.Enums.dobytok;
-using FarmSimulator.Core.Enums.produkt;
+﻿using FarmSimulator.Core.Enums.Dobytok;
+using FarmSimulator.Core.Enums.Produkt;
 using FarmSimulator.Core.Models.Produkty;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FarmSimulator.Core.Models.Statky.produkcneStatky.zvierata.dobytok
+namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Zvierata.Dobytok
 {
     /// <summary>
     /// Trieda reprezentuje dobytok, ktorý je špecifickým typom zvieraťa.
@@ -50,7 +50,14 @@ namespace FarmSimulator.Core.Models.Statky.produkcneStatky.zvierata.dobytok
         /// Ak je zviera najedené, vyprodukuje opakované produkty (napr. mlieko).
         /// </summary>
         public override void Produkcia()
-        {/*
+        {
+            if (this.Najedene)
+            {
+                Console.WriteLine("produkujem mlieko");
+            } else {
+                Console.WriteLine("nie som najedeny, neprodukujem mlieko");
+            }
+            /*
             // Používame property Najedene definovanú v triede Zviera
             if (this.Najedene)
             {

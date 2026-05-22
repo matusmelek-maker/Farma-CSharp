@@ -1,12 +1,7 @@
-﻿using FarmSimulator.Core.Enums.stromy;
-using FarmSimulator.Core.Enums.zelenina;
+﻿using FarmSimulator.Core.Enums.Zelenina;
 using FarmSimulator.Core.Models.Produkty;
-using FarmSimulator.Core.Models.Statky.produkcneStatky.rastliny.stromy;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace FarmSimulator.Core.Models.Statky.produkcneStatky.rastliny.Zelenina
+namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Rastliny.Zelenina
 {
     public class Zelenina : Rastlina
     {

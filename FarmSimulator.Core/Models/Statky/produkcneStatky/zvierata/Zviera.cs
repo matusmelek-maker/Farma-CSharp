@@ -1,16 +1,10 @@
-﻿using FarmSimulator.Core.Enums.statok;
+﻿using FarmSimulator.Core.Enums.Statok;
 
-using FarmSimulator.Core.Enums.zvierata;
+using FarmSimulator.Core.Enums.Zvierata;
 
 using FarmSimulator.Core.Models.Produkty;
-using System.Linq;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using FarmSimulator.Core.Enums.produkt;
-using FarmSimulator.Core.Models.Statky.produkcneStatky.zvierata.dobytok;
 
-namespace FarmSimulator.Core.Models.Statky.produkcneStatky.zvierata
+namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Zvierata
 {
     public abstract class Zviera : ProdukcneStatky
     {
@@ -90,7 +84,6 @@ namespace FarmSimulator.Core.Models.Statky.produkcneStatky.zvierata
         // --- Hlavné Akcie (Metóda VykonajAkcie) ---
         public override void VykonajAkcie()
         {
-            base.Tik(); // Zvýšenie veku
             RozmnozSa();
             NajedzSa();
             Zomri();

@@ -1,7 +1,6 @@
-﻿using FarmSimulator.Core.Enums;
-using FarmSimulator.Core.Enums.produkt;
-using FarmSimulator.Core.Enums.statok;
-using System.Collections.Generic;
+﻿using FarmSimulator.Core.Enums.Produkt;
+using FarmSimulator.Core.Enums.Statok;
+
 
 namespace FarmSimulator.Core.Models.Produkty
 {

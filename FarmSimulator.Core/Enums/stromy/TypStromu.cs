@@ -1,17 +1,14 @@
-﻿using FarmSimulator.Core.Enums.statok;
+﻿using FarmSimulator.Core.Enums.Statok;
 using FarmSimulator.Core.Models.Produkty;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace FarmSimulator.Core.Enums.stromy
-{
+namespace FarmSimulator.Core.Enums.Stromy
+{   
     public record TypStromuInfo(
         string NazovObrazka,
         int KupnaCena,
         int PredajnaCena,
         TypProduktuInfo Produkt,
-        TypObchodnehoTovaru TypTovaru,
+        TypObchodnehoTovaru TypObchodnehoTovaru,
         int ProdukcnyInterval,
         int Zivotnost,
         int DobaRastu
@@ -25,4 +22,5 @@ namespace FarmSimulator.Core.Enums.stromy
 
         public static IEnumerable<TypStromuInfo> GetAll() => [Slivka, Jahoda, Citron];
     }
+
 }

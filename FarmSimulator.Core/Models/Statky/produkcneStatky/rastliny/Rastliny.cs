@@ -1,10 +1,10 @@
-﻿using FarmSimulator.Core.Enums.statok;
+﻿using FarmSimulator.Core.Enums.Statok;
 using FarmSimulator.Core.Models.Produkty;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FarmSimulator.Core.Models.Statky.produkcneStatky.rastliny
+namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Rastliny
 {
     public abstract class Rastlina : ProdukcneStatky
     {
@@ -15,6 +15,12 @@ namespace FarmSimulator.Core.Models.Statky.produkcneStatky.rastliny
 
         // Pomocný zoznam pre použitý hnoj (ako v Jave)
         private List<Produkt> pouzityHnoj = new();
+        private string nazovObrazka;
+        private int kupnaCena;
+        private int predajnaCena;
+        private bool v;
+        private TypObchodnehoTovaru typTovaru;
+        private int zivotnost;
 
         // Eventy pre odstrihnutie Skladu/Farmy
         public event Action<Produkt>? OnHnojSpotrebovany;
@@ -25,6 +31,7 @@ namespace FarmSimulator.Core.Models.Statky.produkcneStatky.rastliny
             this.Pohnojene = false;
             this.StadiumRastu = 1;
             this.PocetPlodov = 0;
+            this.nazovObrazka = nazovObrazka;
         }
 
         /// <summary>

@@ -1,10 +1,7 @@
-﻿using FarmSimulator.Core.Enums.statok;
+﻿using FarmSimulator.Core.Enums.Statok;
 using FarmSimulator.Core.Models.Produkty;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace FarmSimulator.Core.Enums.zelenina
+namespace FarmSimulator.Core.Enums.Zelenina
 {
     public record TypZeleninyInfo(
         string NazovObrazka,

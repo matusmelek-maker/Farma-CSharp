@@ -1,0 +1,61 @@
+﻿using FarmSimulator.Core.Models.Statky;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace FarmSimulator.Core.Models
+{
+    public class Farma
+    {
+        // Singleton vzor (rovnako ako si mal v Jave, ale s C# syntaxou)
+        private static Farma? _instance;
+        public static Farma Instance => _instance ??= new Farma();
+
+        // Zoznam všetkých statkov na farme
+        public List<Statok> Statky { get; private set; }
+
+        private Farma()
+        {
+            Statky = new List<Statok>();
+        }
+
+        public void PridajStatok(Statok statok)
+        {
+            Statky.Add(statok);
+            Console.WriteLine($"[Farma] Pridaný nový statok: {statok.Typ}");
+        }
+
+        /// <summary>
+        /// Hlavná metóda, ktorú bude volať CLI alebo UI na simuláciu plynutia času.
+        /// </summary>
+        public void PosunCas(int pocetTikov)
+        {
+            Console.WriteLine($"\n--- Posúvam čas o {pocetTikov} tikov (sekúnd) ---");
+
+            for (int tik = 0; tik < pocetTikov; tik++)
+            {
+                // Kópia zoznamu pre bezpečné prechádzanie
+                var aktualneStatky = Statky.ToList();
+
+                foreach (var statok in aktualneStatky)
+                {
+                    if (statok.Zije)
+                    {
+                        statok.Tik(); // Zvýši vek statku o 1
+                        statok.VykonajAkcie(); // Zviera vyhladne, rozmnoží sa, atď.
+                    }
+                }
+            }
+
+            // Čistenie zoznamu od mŕtvych statkov
+            int povodnyPocet = Statky.Count;
+            Statky.RemoveAll(s => !s.Zije);
+            int mrtve = povodnyPocet - Statky.Count;
+
+            if (mrtve > 0)
+            {
+                Console.WriteLine($"[Upozornenie] Počas tohto obdobia zomrelo {mrtve} statkov.");
+            }
+        }
+    }
+}

@@ -1,8 +1,8 @@
 ﻿using FarmSimulator.Core.Enums;
-using FarmSimulator.Core.Enums.statok;
+using FarmSimulator.Core.Enums.Statok;
 using System;
 
-namespace FarmSimulator.Core.Models.Statky
+namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky
 {
     /// <summary>
     /// Abstraktná trieda pre statky, ktoré niečo produkujú (zvieratá, rastliny).

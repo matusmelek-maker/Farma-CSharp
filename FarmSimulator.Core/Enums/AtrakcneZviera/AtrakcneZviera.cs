@@ -1,5 +1,5 @@
-﻿using FarmSimulator.Core.Enums.statok;
-using FarmSimulator.Core.Enums.zvierata;
+﻿using FarmSimulator.Core.Enums.Statok;
+using FarmSimulator.Core.Enums.Zvierata;
 using System;
 using System.Collections.Generic;
 using System.Text;

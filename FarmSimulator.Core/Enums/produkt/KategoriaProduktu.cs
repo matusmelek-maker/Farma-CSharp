@@ -1,4 +1,4 @@
-﻿namespace FarmSimulator.Core.Enums.produkt
+﻿namespace FarmSimulator.Core.Enums.Produkt
 {
     public enum KategoriaProduktu
     {

@@ -1,6 +1,6 @@
 ﻿using FarmSimulator.Core.Models.Statky;
 using FarmSimulator.Core.Enums;
-using FarmSimulator.Core.Enums.produkt;
+using FarmSimulator.Core.Enums.Produkt;
 
 namespace FarmSimulator.Core.Models.Produkty
 {

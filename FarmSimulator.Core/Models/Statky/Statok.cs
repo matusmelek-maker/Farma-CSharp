@@ -1,4 +1,4 @@
-﻿using FarmSimulator.Core.Enums.statok;
+﻿using FarmSimulator.Core.Enums.Statok;
 using System;
 
 namespace FarmSimulator.Core.Models.Statky
@@ -51,7 +51,7 @@ namespace FarmSimulator.Core.Models.Statky
         public virtual bool Zomri()
         {
             // V C# používame vlastnosti priamo (Vek namiesto getVek())
-            if (Vek >= Zivotnost || !Zije)
+            if (Vek >= Zivotnost)
             {
                 Zije = false;
 
