@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="FarmSimulator.CLI/FarmSimulator.CLI.csproj" />
+  <Project Path="FarmSimulator.Core/FarmSimulator.Core.csproj" />
+  <Project Path="FarmSimulator.UI/FarmSimulator.UI.csproj" />
+</Solution>
