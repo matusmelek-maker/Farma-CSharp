@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FarmSimulator.Core.Models
+namespace FarmSimulator.Core.Models.Farma
 {
     public class Farma
     {
@@ -41,10 +41,12 @@ namespace FarmSimulator.Core.Models
                 {
                     if (statok.Zije)
                     {
-                        statok.Tik(); // Zvýši vek statku o 1
+                        statok.Tik(); // Aktualizuje vek, zdravie, atď.
                         statok.VykonajAkcie(); // Zviera vyhladne, rozmnoží sa, atď.
                     }
                 }
+
+                Sklad.Instance.PosunCasVSklade();
             }
 
             // Čistenie zoznamu od mŕtvych statkov

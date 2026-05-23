@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FarmSimulator.Core.Models
+namespace FarmSimulator.Core.Models.Farma
 {
     public class Farmar
     {
@@ -27,16 +27,14 @@ namespace FarmSimulator.Core.Models
             {
                 Peniaze -= statok.KupnaCena;
 
-                // Rozhodovací strom podľa typu (Pattern Matching)
                 if (statok is Produkt produkt)
                 {
-                    // Ak je to produkt (krmivo, hnojivo), ide do skladu
-                    Sklad.Instance.PridajProdukt(produkt.Info, 1);
+                    // Posielame tam priamo celý objekt produktu, ktorý sme práve vytvorili
+                    Sklad.Instance.PridajProdukt(produkt);
                     Console.WriteLine($"[Farmár] Kúpil si produkt, ktorý bol uložený do skladu.");
                 }
                 else
                 {
-                    // Ak je to zviera alebo strom, ide na farmu
                     Farma.Instance.PridajStatok(statok);
                 }
 
@@ -50,8 +48,8 @@ namespace FarmSimulator.Core.Models
         {
             if (statok is Produkt produkt)
             {
-                // Ak predávame produkt, musíme ho najprv vedieť zo skladu odobrať
-                if (Sklad.Instance.OdoberProdukt(produkt.Info, 1))
+                // VOLANIE OPRAVENÉ: Už neposielame ", 1", pýtame si vymazanie jedného kusu podľa Info
+                if (Sklad.Instance.OdoberProdukt(produkt.Info))
                 {
                     Peniaze += statok.PredajnaCena;
                     Console.WriteLine($"[Farmár] Produkt bol predaný zo skladu.");

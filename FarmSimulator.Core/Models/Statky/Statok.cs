@@ -36,6 +36,7 @@ namespace FarmSimulator.Core.Models.Statky
             if (Zije)
             {
                 Vek++;
+                VykonajAkcie();
             }
         }
 
