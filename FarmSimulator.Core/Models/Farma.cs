@@ -57,5 +57,44 @@ namespace FarmSimulator.Core.Models
                 Console.WriteLine($"[Upozornenie] Počas tohto obdobia zomrelo {mrtve} statkov.");
             }
         }
+
+        public void VypisStatky()
+        {
+            Console.WriteLine("\n--- Aktuálne statky na farme ---");
+            foreach (var statok in Statky)
+            {
+                Console.WriteLine($"Typ: {statok.Typ}, Vek: {statok.Vek}, Žije: {statok.Zije}");
+            }
+        }
+
+        public Statok? NajdiNajstarsiStatok(Statok hladanyTyp)
+        {
+            Statok najstarsi = null;
+            int maxVek = -1;
+
+            foreach (var s in Statky)
+            {
+                if (s.Zije && s.NazovObrazka == hladanyTyp.NazovObrazka)
+                {
+                    if (s.Vek > maxVek)
+                    {
+                        maxVek = s.Vek;
+                        najstarsi = s;
+                    }
+                }
+            }
+
+            return najstarsi;
+        }
+
+        public void OdstranStatok(Statok statok)
+        {
+            // C# List má vstavanú metódu Remove, ktorá nájde konkrétny objekt a vymaže ho
+            if (Statky.Contains(statok))
+            {
+                Statky.Remove(statok);
+                Console.WriteLine($"[Farma] Statok bol z farmy odstránený.");
+            }
+        }
     }
 }

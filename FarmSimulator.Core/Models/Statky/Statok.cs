@@ -51,7 +51,7 @@ namespace FarmSimulator.Core.Models.Statky
         public virtual bool Zomri()
         {
             // V C# používame vlastnosti priamo (Vek namiesto getVek())
-            if (Vek >= Zivotnost)
+            if (Vek >= Zivotnost  || !Zije)
             {
                 Zije = false;
 
