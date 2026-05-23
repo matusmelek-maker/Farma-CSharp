@@ -9,7 +9,7 @@ namespace FarmSimulator.Core.Models.Statky
     public abstract class Statok
     {
         // Properties (Vlastnosti) nahrádzajú private polia a gettery
-        public string NazovObrazka { get; }
+        public string Nazov { get; }
         public int KupnaCena { get; }
         public int PredajnaCena { get; }
         public int Vek { get; protected set; } // protected set umožní potomkom meniť vek
@@ -19,7 +19,7 @@ namespace FarmSimulator.Core.Models.Statky
 
         protected Statok(string nazovObrazka, int kupnaCena, int predajnaCena, bool zije, TypObchodnehoTovaru typ, int zivotnost)
         {
-            NazovObrazka = nazovObrazka;
+            Nazov = nazovObrazka;
             KupnaCena = kupnaCena;
             PredajnaCena = predajnaCena;
             Zije = zije;

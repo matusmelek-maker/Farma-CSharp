@@ -63,7 +63,7 @@ namespace FarmSimulator.Core.Models
             Console.WriteLine("\n--- Aktuálne statky na farme ---");
             foreach (var statok in Statky)
             {
-                Console.WriteLine($"Typ: {statok.Typ}, Vek: {statok.Vek}, Žije: {statok.Zije}");
+                Console.WriteLine($"Typ: {statok.Nazov}, Vek: {statok.Vek}, Žije: {statok.Zije}");
             }
         }
 
@@ -74,7 +74,7 @@ namespace FarmSimulator.Core.Models
 
             foreach (var s in Statky)
             {
-                if (s.Zije && s.NazovObrazka == hladanyTyp.NazovObrazka)
+                if (s.Zije && s.Nazov == hladanyTyp.Nazov)
                 {
                     if (s.Vek > maxVek)
                     {

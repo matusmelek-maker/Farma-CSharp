@@ -26,6 +26,7 @@ namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Rastliny.Zelenina
 
         public override void Produkcia()
         {
+            /*
             // 1. Kontrola zberu (zelenina je pripravená na zber)
             if (Vek != 0 && Vek % Info.ProdukcnyInterval == 0)
             {
@@ -53,7 +54,7 @@ namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Rastliny.Zelenina
             {
                 this.StadiumRastu = 3;
                 OnStadiumZmenene?.Invoke(this);
-            }
+            }*/
         }
 
         public List<Produkt> GetZeleninaNaPridanie()

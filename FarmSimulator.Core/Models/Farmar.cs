@@ -1,4 +1,5 @@
-﻿using FarmSimulator.Core.Models.Statky;
+﻿using FarmSimulator.Core.Models.Produkty;
+using FarmSimulator.Core.Models.Statky;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -26,11 +27,18 @@ namespace FarmSimulator.Core.Models
             {
                 Peniaze -= statok.KupnaCena;
 
-                // Pridáme statok do Farmy
-                Farma.Instance.PridajStatok(statok);
-
-                // Neskôr sem pridáme aj odoslanie do Skladu, keď ho naprogramuješ
-                // Sklad.Instance.ZmenPocetStatokSklad(statok, 1);
+                // Rozhodovací strom podľa typu (Pattern Matching)
+                if (statok is Produkt produkt)
+                {
+                    // Ak je to produkt (krmivo, hnojivo), ide do skladu
+                    Sklad.Instance.PridajProdukt(produkt.Info, 1);
+                    Console.WriteLine($"[Farmár] Kúpil si produkt, ktorý bol uložený do skladu.");
+                }
+                else
+                {
+                    // Ak je to zviera alebo strom, ide na farmu
+                    Farma.Instance.PridajStatok(statok);
+                }
 
                 return true;
             }
@@ -38,23 +46,30 @@ namespace FarmSimulator.Core.Models
             return false; // Nedostatok peňazí
         }
 
-        /// <summary>
-        /// Predá statok, pripočíta peniaze a označí ho ako mŕtvy/predaný.
-        /// </summary>
         public bool PredajStatok(Statok statok)
         {
-            if (statok.Zije)
+            if (statok is Produkt produkt)
             {
-                Peniaze += statok.PredajnaCena;
-
-                Farma.Instance.OdstranStatok(statok);
-                return true;
+                // Ak predávame produkt, musíme ho najprv vedieť zo skladu odobrať
+                if (Sklad.Instance.OdoberProdukt(produkt.Info, 1))
+                {
+                    Peniaze += statok.PredajnaCena;
+                    Console.WriteLine($"[Farmár] Produkt bol predaný zo skladu.");
+                    return true;
+                }
+                return false; // Produkt nebol na sklade
             }
-            
-            // Môžeme tu zavolať akcie, ktoré sa vykonajú pri predaji, napríklad zníženie počtu statkov na farme
-            // Neskôr sem pridáš aj odstránenie zo skladu
-            // funkciu na najdenie najstaršieho statku a ten
-            // odstrani typ sa bude vediet po kliknuti aky druh predava 
+            else
+            {
+                // Ak predávame živý statok z farmy
+                if (statok.Zije)
+                {
+                    Peniaze += statok.PredajnaCena;
+                    Farma.Instance.OdstranStatok(statok);
+                    return true;
+                }
+            }
+
             return false;
         }
     }
