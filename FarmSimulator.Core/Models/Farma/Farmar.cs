@@ -8,6 +8,8 @@ namespace FarmSimulator.Core.Models.Farma
 {
     public class Farmar
     {
+        private static Farmar? _instance;
+        public static Farmar Instance => _instance ??= new Farmar();
         // Vlastnosť (Property) pre peniaze. 
         // 'private set' znamená, že zvonku sa dajú iba čítať, meniť ich môže len Farmár
         public int Peniaze { get; private set; }
@@ -25,7 +27,7 @@ namespace FarmSimulator.Core.Models.Farma
         {
             if (Peniaze >= statok.KupnaCena)
             {
-                Peniaze -= statok.KupnaCena;
+                AktualizujPeniaze(statok.PredajnaCena);
 
                 if (statok is Produkt produkt)
                 {
@@ -51,7 +53,7 @@ namespace FarmSimulator.Core.Models.Farma
                 // VOLANIE OPRAVENÉ: Už neposielame ", 1", pýtame si vymazanie jedného kusu podľa Info
                 if (Sklad.Instance.OdoberProdukt(produkt.Info))
                 {
-                    Peniaze += statok.PredajnaCena;
+                    AktualizujPeniaze(statok.PredajnaCena);
                     Console.WriteLine($"[Farmár] Produkt bol predaný zo skladu.");
                     return true;
                 }
@@ -62,13 +64,23 @@ namespace FarmSimulator.Core.Models.Farma
                 // Ak predávame živý statok z farmy
                 if (statok.Zije)
                 {
-                    Peniaze += statok.PredajnaCena;
+                    AktualizujPeniaze(statok.PredajnaCena);
                     Farma.Instance.OdstranStatok(statok);
                     return true;
                 }
             }
 
             return false;
+        }
+
+        internal void AktualizujPeniaze(int rozdiel)
+        {
+            Peniaze += rozdiel;
+            if (rozdiel >= 0)
+                Console.WriteLine($"Farmár získal {rozdiel}$. Celkové peníze: {Peniaze}");
+            else
+                Console.WriteLine($"Farmár minul {rozdiel}$. Celkové peníze: {Peniaze}");
+
         }
     }
 }

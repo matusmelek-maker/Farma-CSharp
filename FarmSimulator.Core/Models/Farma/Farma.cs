@@ -1,4 +1,5 @@
-﻿using FarmSimulator.Core.Models.Statky;
+﻿using FarmSimulator.Core.Models.Ludia;
+using FarmSimulator.Core.Models.Statky;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -47,6 +48,7 @@ namespace FarmSimulator.Core.Models.Farma
                 }
 
                 Sklad.Instance.PosunCasVSklade();
+                SpravcaLudi.Instance.Tik(); // Pridaný riadok!
             }
 
             // Čistenie zoznamu od mŕtvych statkov
