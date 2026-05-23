@@ -27,7 +27,7 @@ namespace FarmSimulator.Core.Models.Farma
         {
             if (Peniaze >= statok.KupnaCena)
             {
-                AktualizujPeniaze(statok.PredajnaCena);
+                AktualizujPeniaze(-statok.PredajnaCena);
 
                 if (statok is Produkt produkt)
                 {
