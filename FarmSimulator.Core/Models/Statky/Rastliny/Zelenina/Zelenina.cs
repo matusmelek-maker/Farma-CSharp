@@ -1,15 +1,19 @@
 ﻿using FarmSimulator.Core.Enums.Zelenina;
 using FarmSimulator.Core.Models.Produkty;
-using FarmSimulator.Core.Models.Statky.Rastliny;
+using FarmSimulator.Core.Models.SpravaFarmy;
+using FarmSimulator.Core.Models.Statky.Interfaces;
+using System;
+
+// Pridaj správny using pre tvoje TypZeleninyInfo (napr. Records namiesto Enums, ak si to menil)
+// using FarmSimulator.Core.Records.Zelenina; 
 
 namespace FarmSimulator.Core.Models.Statky.Rastliny.Zelenina
 {
-    public class Zelenina : Rastlina
+    public class Zelenina : Rastlina, IProdukcne
     {
         public TypZeleninyInfo Info { get; }
-        private List<Produkt> vyprodukovanaZelenina = new();
 
-        // Udalosti pre decoupling (oddelenie) od UI a Skladu
+        // Udalosti pre UI
         public event Action<Zelenina>? OnStadiumZmenene;
         public event Action<Produkt>? OnZeleninaVyprodukovana;
 
@@ -22,47 +26,56 @@ namespace FarmSimulator.Core.Models.Statky.Rastliny.Zelenina
         public override void VykonajAkcie()
         {
             base.VykonajAkcie(); // Rieši starnutie a hnojenie z Rastlina.cs
-            this.Produkcia();
+
+            // Zelenina produkuje a rastie len kým žije
+            if (Zije)
+            {
+                this.Produkcia();
+            }
+        }
+
+        // Pomocná metóda na bezpečnú zmenu štádia pre UI
+        private void ZmenStadium(int noveStadium)
+        {
+            if (this.StadiumRastu != noveStadium)
+            {
+                this.StadiumRastu = noveStadium;
+                OnStadiumZmenene?.Invoke(this);
+            }
         }
 
         public void Produkcia()
         {
-            /*
             // 1. Kontrola zberu (zelenina je pripravená na zber)
             if (Vek != 0 && Vek % Info.ProdukcnyInterval == 0)
             {
-                this.StadiumRastu = 4;
-                OnStadiumZmenene?.Invoke(this);
+                ZmenStadium(4); // Obrázok plne dozretej zeleniny
 
+                // Vyprodukujeme zeleninu podľa počtu plodov (ovplyvnené hnojivom z Rastlina.cs)
                 for (int i = 0; i < PocetPlodov; i++)
                 {
+                    // Predpokladám, že Info.Produkt odkazuje na TypProduktuInfo
                     var produkt = new Produkt(Info.Produkt);
-                    vyprodukovanaZelenina.Add(produkt);
+
+                    // Odoslanie priamo do Skladu (žiadne ukladanie do lokálnych listov)
+                    Sklad.Instance.PridajProdukt(produkt);
+
                     OnZeleninaVyprodukovana?.Invoke(produkt);
                 }
 
-                // Zelenina po zbere hynie (rozdiel oproti stromom)
+                Console.WriteLine($"[Zelenina] {Nazov} bola zozbieraná (Plodov: {PocetPlodov}) a odumiera.");
                 this.Zije = false;
-                this.Zomri();
+                
             }
             // 2. Fázy rastu (zelenina rastie fixne podľa veku 3 a 6)
             else if (Vek == 3)
             {
-                this.StadiumRastu = 2;
-                OnStadiumZmenene?.Invoke(this);
+                ZmenStadium(2);
             }
             else if (Vek == 6)
             {
-                this.StadiumRastu = 3;
-                OnStadiumZmenene?.Invoke(this);
-            }*/
-        }
-
-        public List<Produkt> GetZeleninaNaPridanie()
-        {
-            var result = new List<Produkt>(vyprodukovanaZelenina);
-            vyprodukovanaZelenina.Clear();
-            return result;
+                ZmenStadium(3);
+            }
         }
     }
 }
