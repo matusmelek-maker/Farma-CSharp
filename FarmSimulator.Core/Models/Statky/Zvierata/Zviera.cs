@@ -4,10 +4,11 @@ using FarmSimulator.Core.Properties.Statok;
 using FarmSimulator.Core.Properties.Zvierata;
 using FarmSimulator.Core.Models.Produkty;
 using FarmSimulator.Core.Models.SpravaFarmy;
+using FarmSimulator.Core.Models.Statky.Interfaces;
 
 namespace FarmSimulator.Core.Models.Statky.Zvierata
 {
-    public abstract class Zviera : Statok
+    public abstract class Zviera : Statok, IPrijimajuciZiviny
     {
         // --- Polia a Vlastnosti (Presne podľa Javy) ---
         public int KonstantaHlad { get; }
@@ -86,7 +87,7 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata
         public override void VykonajAkcie()
         {
             RozmnozSa();
-            NajedzSa();
+            PrijmiZiviny();
             Zomri();
         }
 
@@ -133,7 +134,7 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata
         }
 
         // --- Hladovanie ---
-        public void NajedzSa()
+        public void PrijmiZiviny()
         {
             if (Vek != 0 && Vek % KonstantaHlad == 0)
             {

@@ -1,5 +1,6 @@
 ﻿using FarmSimulator.Core.Models.Produkty;
 using FarmSimulator.Core.Models.SpravaFarmy;
+using FarmSimulator.Core.Models.Statky.Interfaces;
 using FarmSimulator.Core.Properties.Produkt;
 using FarmSimulator.Core.Properties.Statok;
 using System;
@@ -8,7 +9,7 @@ using System.Text;
 
 namespace FarmSimulator.Core.Models.Statky.Rastliny
 {
-    public abstract class Rastlina : Statok
+    public abstract class Rastlina : Statok, IPrijimajuciZiviny
     {
         // Vlastnosti rastliny
         public bool Pohnojene { get; private set; }
@@ -38,14 +39,14 @@ namespace FarmSimulator.Core.Models.Statky.Rastliny
         public override void VykonajAkcie()
         {
             this.Zomri();
-            this.PrijmiHnoj();
+            this.PrijmiZiviny();
         }
 
         /// <summary>
         /// Pokiaľ rastlina nie je pohnojená, pokúsi sa nájsť hnoj v systéme.
         /// Ak je pohnojená, produkuje 2 plody, inak 1.
         /// </summary>
-        public void PrijmiHnoj()
+        public void PrijmiZiviny()
         {
             // Ak už je pohnojená, neriešime ďalej
             if (Pohnojene) return;
