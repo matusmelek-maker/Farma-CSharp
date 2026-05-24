@@ -43,6 +43,7 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata.Dobytok
 
             // Pridá špecifickú logiku produkcie pre dobytok
             this.Produkcia();
+            this.SpracujNaMeso();
         }
 
         /// <summary>
@@ -122,11 +123,6 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata.Dobytok
                         Console.WriteLine($"[Farma] {Nazov} (Vek: {Vek}) prirodzene uhynul a vyprodukoval: {novyProdukt.Nazov}");
                     }
                 }
-            }
-            else
-            {
-                // Výpis pre prípad, že zviera zomrelo od hladu pred dosiahnutím veku
-                Console.WriteLine($"[Farma] {Nazov} uhynul predčasne (hlad/choroba) a nebol spracovaný na mäso.");
             }
         }
     }

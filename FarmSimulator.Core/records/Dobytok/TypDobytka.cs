@@ -34,7 +34,7 @@ namespace FarmSimulator.Core.Enums.Dobytok
         public static readonly TypDobytkaInfo Prasa = new("prasa", 500, 300, 20, false, 40, 250, 3, DruhZvierata.Prasa, TypObchodnehoTovaru.Dobytok, [TypyProduktov.BravcoveMaso]);
 
         public static readonly TypDobytkaInfo Byk = new("byk", 800, 500, 16, true, 20, 400, 4, DruhZvierata.Krava, TypObchodnehoTovaru.Dobytok, [TypyProduktov.Hovadzina]);
-        public static readonly TypDobytkaInfo Krava = new("krava", 800, 500, 16, false, 40, 400, 4, DruhZvierata.Krava, TypObchodnehoTovaru.Dobytok, [TypyProduktov.KravskeMlieko, TypyProduktov.Hovadzina]);
+        public static readonly TypDobytkaInfo Krava = new("krava", 800, 500, 16, false, 40, 10, 4, DruhZvierata.Krava, TypObchodnehoTovaru.Dobytok, [TypyProduktov.KravskeMlieko, TypyProduktov.Hovadzina]);
 
         public static IEnumerable<TypDobytkaInfo> GetAll() =>
             [Kohut, Sliepka, Baran, Ovca, Cap, Koza, Kanec, Prasa, Byk, Krava];
