@@ -1,9 +1,4 @@
-﻿using FarmSimulator.Core.Models.SpravaFarmy;
-using FarmSimulator.Core.Models.Ludia;
-using FarmSimulator.Core.Models.Produkty;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using FarmSimulator.Core.Properties.Produkt;
 
 namespace FarmSimulator.Core.Models.Ludia
 {

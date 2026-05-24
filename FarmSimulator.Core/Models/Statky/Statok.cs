@@ -1,4 +1,4 @@
-﻿using FarmSimulator.Core.Enums.Statok;
+﻿using FarmSimulator.Core.Properties.Statok;
 using System;
 
 namespace FarmSimulator.Core.Models.Statky

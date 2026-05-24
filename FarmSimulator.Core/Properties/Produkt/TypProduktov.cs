@@ -1,8 +1,8 @@
-﻿using FarmSimulator.Core.Enums.Produkt;
-using FarmSimulator.Core.Enums.Statok;
+﻿using FarmSimulator.Core.Properties.Produkt;
+using FarmSimulator.Core.Properties.Statok;
 
 
-namespace FarmSimulator.Core.Models.Produkty
+namespace FarmSimulator.Core.Properties.Produkt
 {
     // Definícia dátovej štruktúry pre typ produktu
     public record TypProduktuInfo(

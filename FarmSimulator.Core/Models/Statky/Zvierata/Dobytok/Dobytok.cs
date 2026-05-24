@@ -1,5 +1,5 @@
-﻿using FarmSimulator.Core.Enums.Dobytok;
-using FarmSimulator.Core.Enums.Produkt;
+﻿using FarmSimulator.Core.Properties.Dobytok;
+using FarmSimulator.Core.Properties.Produkt;
 using FarmSimulator.Core.Models.Produkty;
 using FarmSimulator.Core.Models.SpravaFarmy;
 using FarmSimulator.Core.Models.Statky.Interfaces;

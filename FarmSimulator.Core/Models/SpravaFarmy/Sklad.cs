@@ -1,5 +1,6 @@
 ﻿using FarmSimulator.Core.Models.Produkty;
 using FarmSimulator.Core.Models.Statky;
+using FarmSimulator.Core.Properties.Produkt;
 using System.Collections.Generic;
 using System.Linq;
 

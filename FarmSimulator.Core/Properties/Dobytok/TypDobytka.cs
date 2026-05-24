@@ -1,8 +1,8 @@
-﻿using FarmSimulator.Core.Enums.Statok;
-using FarmSimulator.Core.Enums.Zvierata;
-using FarmSimulator.Core.Models.Produkty;
+﻿using FarmSimulator.Core.Properties.Statok;
+using FarmSimulator.Core.Properties.Zvierata;
+using FarmSimulator.Core.Properties.Produkt;
 
-namespace FarmSimulator.Core.Enums.Dobytok
+namespace FarmSimulator.Core.Properties.Dobytok
 {
     // Dátový prepis pre jeden druh dobytka
     public record TypDobytkaInfo(

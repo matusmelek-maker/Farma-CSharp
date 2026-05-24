@@ -1,4 +1,4 @@
-﻿namespace FarmSimulator.Core.Enums.Statok
+﻿namespace FarmSimulator.Core.Properties.Statok
 {
     public enum TypObchodnehoTovaru
     {

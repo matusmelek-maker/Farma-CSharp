@@ -1,5 +1,6 @@
-﻿using FarmSimulator.Core.Enums.Statok;
+﻿using FarmSimulator.Core.Properties.Statok;
 using FarmSimulator.Core.Models.Produkty;
+using FarmSimulator.Core.Properties.Produkt;
 
 namespace FarmSimulator.Core.Enums.Stromy
 {   

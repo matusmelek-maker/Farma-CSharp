@@ -1,4 +1,4 @@
-﻿namespace FarmSimulator.Core.Enums.Zvierata
+﻿namespace FarmSimulator.Core.Properties.Zvierata
 {
     public enum DruhZvierata
     {
