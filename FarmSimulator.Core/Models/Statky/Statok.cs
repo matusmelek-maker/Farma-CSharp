@@ -1,24 +1,44 @@
 ﻿using FarmSimulator.Core.Properties.Statok;
 using System;
+using System.Text.Json.Serialization;
+
+// Zahrnuté usingy, aby Statok poznal svojich potomkov pre JSON
+using FarmSimulator.Core.Models.Statky.Zvierata.Dobytok;
+using FarmSimulator.Core.Models.Statky.Zvierata.AtrakcneZviera;
+using FarmSimulator.Core.Models.Statky.Rastliny.Stromy;
+using FarmSimulator.Core.Models.Statky.Rastliny.Zelenina;
+using FarmSimulator.Core.Models.Produkty;
 
 namespace FarmSimulator.Core.Models.Statky
 {
     /// <summary>
     /// Abstraktná trieda Statok predstavuje základnú entitu obchodného tovaru.
     /// </summary>
+
+    // Tieto atribúty povedia JSONu, aké objekty má pri načítavaní očakávať a ako ich označiť
+    [JsonDerivedType(typeof(Dobytok), typeDiscriminator: "Dobytok")]
+    [JsonDerivedType(typeof(AtrakcneZviera), typeDiscriminator: "AtrakcneZviera")]
+    [JsonDerivedType(typeof(Strom), typeDiscriminator: "Strom")]
+    [JsonDerivedType(typeof(Zelenina), typeDiscriminator: "Zelenina")]
+    [JsonDerivedType(typeof(Produkt), typeDiscriminator: "Produkt")]
     public abstract class Statok
     {
-        // Properties (Vlastnosti) nahrádzajú private polia a gettery
-        public string Nazov { get; }
-        public int KupnaCena { get; }
-        public int PredajnaCena { get; }
-        public int Vek { get; protected set; } // protected set umožní potomkom meniť vek
-        public bool Zije { get; set; }
-        public TypObchodnehoTovaru Typ { get; }
-        public int Zivotnost { get; }
+        // Vlastnosti musia mať aspoň 'protected set' a [JsonInclude], 
+        // aby ich JsonSerializer vedel pri načítavaní zo súboru vyplniť.
+        [JsonInclude] public string Nazov { get; protected set; }
+        [JsonInclude] public int KupnaCena { get; protected set; }
+        [JsonInclude] public int PredajnaCena { get; protected set; }
+        [JsonInclude] public int Vek { get; protected set; }
+        [JsonInclude] public bool Zije { get; set; }
+        [JsonInclude] public TypObchodnehoTovaru Typ { get; protected set; }
+        [JsonInclude] public int Zivotnost { get; protected set; }
 
         public event Action? OnZomrel;
 
+        // BEZPARAMETRICKÝ KONŠTRUKTOR PRE JSON
+        // Systém ho nutne potrebuje na vytvorenie prázdneho objektu pred jeho naplnením dátami zo súboru
+        [JsonConstructor]
+        protected Statok() { }
 
         protected Statok(string nazovObrazka, int kupnaCena, int predajnaCena, bool zije, TypObchodnehoTovaru typ, int zivotnost)
         {
@@ -54,7 +74,7 @@ namespace FarmSimulator.Core.Models.Statky
         public virtual bool Zomri()
         {
             // V C# používame vlastnosti priamo (Vek namiesto getVek())
-            if (Vek >= Zivotnost  || !Zije)
+            if (Vek >= Zivotnost || !Zije)
             {
                 Zije = false;
 

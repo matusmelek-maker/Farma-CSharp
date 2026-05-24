@@ -1,25 +1,28 @@
 ﻿using FarmSimulator.Core.Properties.Produkt;
 using FarmSimulator.Core.Properties.Statok;
-
 using FarmSimulator.Core.Properties.Zvierata;
 using FarmSimulator.Core.Models.Produkty;
 using FarmSimulator.Core.Models.SpravaFarmy;
 using FarmSimulator.Core.Models.Statky.Interfaces;
+using System.Text.Json.Serialization; // Pridaný using pre JSON
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FarmSimulator.Core.Models.Statky.Zvierata
 {
     public abstract class Zviera : Statok, IPrijimajuciZiviny
     {
-        // --- Polia a Vlastnosti (Presne podľa Javy) ---
-        public int KonstantaHlad { get; }
-        public bool Pohlavie { get; } // true = samec, false = samica
-        public int KonstantaReprodukcie { get; }
-        public int IndexOhradky { get; }
-        public DruhZvierata Druh { get; }
+        // --- Polia a Vlastnosti pre JSON ---
+        [JsonInclude] public int KonstantaHlad { get; protected set; }
+        [JsonInclude] public bool Pohlavie { get; protected set; } // true = samec, false = samica
+        [JsonInclude] public int KonstantaReprodukcie { get; protected set; }
+        [JsonInclude] public int IndexOhradky { get; protected set; }
+        [JsonInclude] public DruhZvierata Druh { get; protected set; }
 
-        public bool PripravenyNaReprodukciu { get; set; }
-        public bool Najedene { get; set; }
-        public int UrovenHladu { get; protected set; }
+        [JsonInclude] public bool PripravenyNaReprodukciu { get; set; }
+        [JsonInclude] public bool Najedene { get; set; }
+        [JsonInclude] public int UrovenHladu { get; protected set; }
 
         // Interné zoznamy (ArrayListy z Javy)
         private List<Zviera> pridane = new();
@@ -32,6 +35,10 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata
         private double smerX;
         private double smerY;
         private Random random = new Random();
+
+        // BEZPARAMETRICKÝ KONŠTRUKTOR PRE JSON
+        [JsonConstructor]
+        protected Zviera() { }
 
         // --- Konštruktor ---
         protected Zviera(string nazovObrazka, int kupnaCena, int predajnaCena, TypObchodnehoTovaru typ,
@@ -69,7 +76,7 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata
             PoziciaX += smerX * rychlost;
             PoziciaY += smerY * rychlost;
 
-            // Odrazy od okrajov (ako v tvojej Jave)
+            // Odrazy od okrajov
             if (PoziciaX < 0 || PoziciaX > sirkaOhrady - 50) { smerX *= -1; }
             if (PoziciaY < 0 || PoziciaY > vyskaOhrady - 50) { smerY *= -1; }
 
@@ -94,40 +101,29 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata
         // --- Reprodukcia ---
         public void RozmnozSa()
         {
-            // 1. Zistenie, či je čas na reprodukciu (v C# používame Properties namiesto getVek())
             if (Vek != 0 && Vek % KonstantaReprodukcie == 0)
             {
                 PripravenyNaReprodukciu = true;
             }
 
-            // 2. Ak je samec (Pohlavie = true) a je pripravený, hľadá samicu
             if (PripravenyNaReprodukciu && Pohlavie)
             {
-                // 3. Použitie LINQ na nájdenie vhodných samíc (Koniec dlhých for-cyklov a if-ov!)
                 var vhodneSamice = Farma.Instance.Statky
-                    .OfType<Zviera>() // Zoberieme z farmy iba zvieratá
+                    .OfType<Zviera>()
                     .Where(z => !z.Pohlavie && z.PripravenyNaReprodukciu && z.Druh == this.Druh)
-                    .ToList(); // Urobíme si kópiu zoznamu, aby sme mohli bezpečne iterovať
+                    .ToList();
 
                 foreach (var samica in vhodneSamice)
                 {
-                    // Šanca 50:50, čí klon to bude (používame tvoj private Random random)
                     Zviera noveZviera = (random.Next(100) < 50) ? this.VytvorKlon() : samica.VytvorKlon();
 
                     if (noveZviera != null)
                     {
-                        // 4. Pridanie zvieratka PRIAMO na Farmu
                         Farma.Instance.PridajStatok(noveZviera);
-
-                        // 5. Reset stavu u oboch rodičov
                         this.PripravenyNaReprodukciu = false;
                         samica.PripravenyNaReprodukciu = false;
-
-                        // 6. Pridanie do interného zoznamu zvierata
                         this.pridane.Add(noveZviera);
-
-                        // Samec sa práve rozmnožil, nemusí v tomto tiku hľadať ďalšie samice
-                        break; 
+                        break;
                     }
                 }
             }
@@ -140,19 +136,13 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata
             {
                 if (!Najedene)
                 {
-                    // 2. Hľadáme potravu v SKLADE (Koniec if(statok is Produkt)!)
-                    // FirstOrDefault nájde prvý živý produkt, ktorý je krmivo. Ak nenájde, vráti null.
                     var krmivo = Sklad.Instance.UskladneneProdukty
                         .FirstOrDefault(p => p.Info.TypTovaru == TypObchodnehoTovaru.Krmivo && p.Zije);
 
                     if (krmivo != null)
                     {
-                        // Zviera úspešne našlo potravu
                         zeleninaZjedena.Add(krmivo);
-
-                        // Namiesto odstraňovania, krmivo len "zabijeme" (Sklad si ho uprace sám pri ďalšom tiku)
                         krmivo.Zije = false;
-
                         Najedene = true;
 
                         if (UrovenHladu > 0)
@@ -160,34 +150,26 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata
                             UrovenHladu--;
                         }
 
-                        // 3. Produkcia hnoja
                         var hnoj = new Produkt(TypyProduktov.Hnoj);
                         pridaneProdukty.Add(hnoj);
-
-                        // V C# sme Skladu pridali metódu PridajProdukt, ktorá prijíma priamo objekt
                         Sklad.Instance.PridajProdukt(hnoj);
                     }
                 }
 
-                // 4. Ak po pokuse o jedenie zostalo hladné (nenašlo sa krmivo), stúpa hlad
                 if (!Najedene)
                 {
                     UrovenHladu++;
                     if (UrovenHladu >= 3)
                     {
-                        // Zviera zomrelo od hladu
                         Zije = false;
-                        Zomri(); // Toto automaticky "zakričí" do eventu OnZomrel, ktorý sme nastavili minule!
+                        Zomri();
                     }
                 }
             }
         }
 
-
-        // --- Abstraktné metódy pre podtriedy ---
         protected abstract Zviera VytvorKlon();
 
-        // --- Gettery (S logikou vymazania zoznamu po prebraní) ---
         public List<Zviera> GetPridaneZvierata() { var res = new List<Zviera>(pridane); pridane.Clear(); return res; }
         public List<Produkt> GetZjedenuZeleninu() { var res = new List<Produkt>(zeleninaZjedena); zeleninaZjedena.Clear(); return res; }
         public List<Produkt> GetPridaneProdukty() { var res = new List<Produkt>(pridaneProdukty); pridaneProdukty.Clear(); return res; }

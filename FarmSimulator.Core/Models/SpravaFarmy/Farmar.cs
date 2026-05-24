@@ -18,7 +18,10 @@ namespace FarmSimulator.Core.Models.SpravaFarmy
         {
             Peniaze = pociatocnePeniaze;
         }
-
+        public void NastavPeniaze(int peniazeFarmara)
+        {
+            Peniaze = peniazeFarmara;
+        }
         /// <summary>
         /// Pokúsi sa kúpiť statok.
         /// </summary>
@@ -82,5 +85,7 @@ namespace FarmSimulator.Core.Models.SpravaFarmy
                 Console.WriteLine($"Farmár minul {rozdiel}$. Celkové peníze: {Peniaze}");
 
         }
+
+        
     }
 }
