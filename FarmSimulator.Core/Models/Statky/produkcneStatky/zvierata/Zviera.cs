@@ -3,6 +3,7 @@
 using FarmSimulator.Core.Enums.Zvierata;
 
 using FarmSimulator.Core.Models.Produkty;
+using FarmSimulator.Core.Models.SpravaFarmy;
 
 namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Zvierata
 {
@@ -92,69 +93,94 @@ namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Zvierata
 
         // --- Reprodukcia ---
         public void RozmnozSa()
+{
+    // 1. Zistenie, či je čas na reprodukciu (v C# používame Properties namiesto getVek())
+    if (Vek != 0 && Vek % KonstantaReprodukcie == 0)
+    {
+        PripravenyNaReprodukciu = true;
+    }
+
+    // 2. Ak je samec (Pohlavie = true) a je pripravený, hľadá samicu
+    if (PripravenyNaReprodukciu && Pohlavie)
+    {
+        // 3. Použitie LINQ na nájdenie vhodných samíc (Koniec dlhých for-cyklov a if-ov!)
+        var vhodneSamice = Farma.Instance.Statky
+            .OfType<Zviera>() // Zoberieme z farmy iba zvieratá
+            .Where(z => !z.Pohlavie && z.PripravenyNaReprodukciu && z.Druh == this.Druh)
+            .ToList(); // Urobíme si kópiu zoznamu, aby sme mohli bezpečne iterovať
+
+        foreach (var samica in vhodneSamice)
         {
-           /* if (Vek != 0 && Vek % KonstantaReprodukcie == 0)
+            // Šanca 50:50, čí klon to bude (používame tvoj private Random random)
+            Zviera noveZviera = (random.Next(100) < 50) ? this.VytvorKlon() : samica.VytvorKlon();
+
+            if (noveZviera != null)
             {
-                PripravenyNaReprodukciu = true;
+                // 4. Pridanie zvieratka PRIAMO na Farmu
+                Farma.Instance.PridajStatok(noveZviera);
+
+                // 5. Reset stavu u oboch rodičov
+                this.PripravenyNaReprodukciu = false;
+                samica.PripravenyNaReprodukciu = false;
+
+                // 6. Pridanie do interného zoznamu zvierata
+                this.pridane.Add(noveZviera);
+
+                // Samec sa práve rozmnožil, nemusí v tomto tiku hľadať ďalšie samice
+                break; 
             }
-
-            if (PripravenyNaReprodukciu && Pohlavie) // Samec hľadá
-            {
-                // V C# používame LINQ pre hľadanie partnera
-                var samice = Farma.Instance.Zvierata
-                    .Where(s => !s.Pohlavie && s.PripravenyNaReprodukciu && s.Druh == this.Druh);
-
-                foreach (var samica in samice)
-                {
-                    Zviera noveZviera = (random.Next(100) < 50) ? this.VytvorKlon() : samica.VytvorKlon();
-
-                    if (noveZviera != null)
-                    {
-                        Sklad.Instance.ZmenPocetStatokSklad(noveZviera, 1);
-                        Farma.Instance.PridajStatok(noveZviera);
-
-                        this.PripravenyNaReprodukciu = false;
-                        samica.PripravenyNaReprodukciu = false;
-                        this.pridane.Add(noveZviera);
-                    }
-                }
-            }*/
         }
+    }
+}
 
         // --- Hladovanie ---
         public void NajedzSa()
         {
-            // 1. Pokus o kŕmenie
-           /* if (Vek % KonstantaHlad == 0 && Vek != 0 && !Najedene)
+            if (Vek != 0 && Vek % KonstantaHlad == 0)
             {
-                var krmivo = Farma.Instance.Statky
-                    .OfType<Produkt>()
-                    .FirstOrDefault(p => p.Typ == TypObchodnehoTovaru.Krmivo && p.Zije);
-
-                if (krmivo != null)
+                if (!Najedene)
                 {
-                    zeleninaZjedena.Add(krmivo);
-                    Sklad.Instance.ZmenPocetStatokSklad(krmivo, -1);
-                    Najedene = true;
+                    // 2. Hľadáme potravu v SKLADE (Koniec if(statok is Produkt)!)
+                    // FirstOrDefault nájde prvý živý produkt, ktorý je krmivo. Ak nenájde, vráti null.
+                    var krmivo = Sklad.Instance.UskladneneProdukty
+                        .FirstOrDefault(p => p.Info.TypTovaru == TypObchodnehoTovaru.Krmivo && p.Zije);
 
-                    if (UrovenHladu != 0) UrovenHladu--;
+                    if (krmivo != null)
+                    {
+                        // Zviera úspešne našlo potravu
+                        zeleninaZjedena.Add(krmivo);
 
-                    var hnoj = new Produkt(TypyProduktov.Hnoj);
-                    pridaneProdukty.Add(hnoj);
-                    Sklad.Instance.ZmenPocetStatokSklad(hnoj, 1);
+                        // Namiesto odstraňovania, krmivo len "zabijeme" (Sklad si ho uprace sám pri ďalšom tiku)
+                        krmivo.Zije = false;
+
+                        Najedene = true;
+
+                        if (UrovenHladu > 0)
+                        {
+                            UrovenHladu--;
+                        }
+
+                        // 3. Produkcia hnoja
+                        var hnoj = new Produkt(TypyProduktov.Hnoj);
+                        pridaneProdukty.Add(hnoj);
+
+                        // V C# sme Skladu pridali metódu PridajProdukt, ktorá prijíma priamo objekt
+                        Sklad.Instance.PridajProdukt(hnoj);
+                    }
+                }
+
+                // 4. Ak po pokuse o jedenie zostalo hladné (nenašlo sa krmivo), stúpa hlad
+                if (!Najedene)
+                {
+                    UrovenHladu++;
+                    if (UrovenHladu >= 3)
+                    {
+                        // Zviera zomrelo od hladu
+                        Zije = false;
+                        Zomri(); // Toto automaticky "zakričí" do eventu OnZomrel, ktorý sme nastavili minule!
+                    }
                 }
             }
-
-            // 2. Ak ostalo hladné, zvyšuje sa úroveň hladu
-            if (Vek % KonstantaHlad == 0 && !Najedene)
-            {
-                UrovenHladu++;
-                if (UrovenHladu >= 3)
-                {
-                    Zije = false;
-                    Zomri();
-                }
-            }*/
         }
 
         // --- Spracovanie na mäso ---

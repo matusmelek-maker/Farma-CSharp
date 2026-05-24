@@ -1,6 +1,7 @@
 ﻿using FarmSimulator.Core.Enums.Dobytok;
 using FarmSimulator.Core.Enums.Produkt;
 using FarmSimulator.Core.Models.Produkty;
+using FarmSimulator.Core.Models.SpravaFarmy;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,7 +21,7 @@ namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Zvierata.Dobytok
         private List<Produkt> vyprodukovaneProdukty = new();
 
         public Dobytok(TypDobytkaInfo info)
-            : base(info.NazovObrazka,
+            : base(info.Nazov,
                    info.KupnaCena,
                    info.PredajnaCena,
                    info.TypTovaru,
@@ -51,34 +52,33 @@ namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Zvierata.Dobytok
         /// </summary>
         public override void Produkcia()
         {
+            // 1. Pristupujeme priamo k property (bez isNajedene())
             if (this.Najedene)
             {
-                Console.WriteLine("produkujem mlieko");
-            } else {
-                Console.WriteLine("nie som najedeny, neprodukujem mlieko");
-            }
-            /*
-            // Používame property Najedene definovanú v triede Zviera
-            if (this.Najedene)
-            {
-                // Resetujeme stav nasýtenia po produkcii (ako v tvojej Jave)
+                // 2. Resetujeme stav nasýtenia
                 this.Najedene = false;
 
-                // Prechádzame všetky možné produkty, ktoré tento typ dobytka môže mať
-                foreach (var pInfo in Info.Produkty)
+                // 3. Namiesto klasického for-cyklu a indexu 'i' použijeme foreach
+                // Toto rovno prechádza pole 'Produkty' definované v tvojom TypDobytkaInfo
+                foreach (var pInfo in this.Info.Produkty)
                 {
-                    // Produkujeme len opakované produkty (vajcia, mlieko, vlna)
-                    // Mäso sa rieši v base.SpracujNaMeso() pri úhyne
+                    // 4. Overíme kategóriu (využívame Enum)
                     if (pInfo.Kategoria == KategoriaProduktu.Opakovany)
                     {
-                        Produkt novyProdukt = new Produkt(pInfo);
+                        // Vytvoríme nový objekt produktu
+                        var novyProdukt = new Produkt(pInfo);
+
+                        // Pridáme do interného zoznamu dobytka
                         this.vyprodukovaneProdukty.Add(novyProdukt);
 
-                        // Pridanie do globálneho skladu
-                        Sklad.Instance.ZmenPocetStatokSklad(novyProdukt, 1);
+                        // 5. Nová C# architektúra: Pošleme celý objekt priamo do Skladu
+                        Sklad.Instance.PridajProdukt(novyProdukt);
+
+                        // Pomocný výpis do konzoly, aby sme videli, že zviera niečo vyprodukovalo
+                        Console.WriteLine($"[Farma] {this.Nazov} vyprodukoval: {novyProdukt.Nazov}");
                     }
                 }
-            }*/
+            }
         }
 
         /// <summary>

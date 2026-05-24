@@ -1,58 +1,57 @@
 ﻿using FarmSimulator.Core.Enums.Dobytok;
 using FarmSimulator.Core.Enums.Zelenina;
-using FarmSimulator.Core.Models;
-using FarmSimulator.Core.Models.Farma;
+using FarmSimulator.Core.Models.SpravaFarmy;
 using FarmSimulator.Core.Models.Ludia;
 using FarmSimulator.Core.Models.Produkty;
-using FarmSimulator.Core.Models.Statky.ProdukcneStatky.Rastliny.Zelenina;
+using FarmSimulator.Core.Models.Statky.ProdukcneStatky.Zvierata;
 using FarmSimulator.Core.Models.Statky.ProdukcneStatky.Zvierata.Dobytok;
 using System;
-using System.Linq; // Pridané pre FirstOrDefault
+using System.Linq;
 
-// Spustenie samotnej slučky (Top-level statements)
 VytvorFarmara();
 
 void VytvorFarmara()
 {
-    // 1. Pristupujeme k Farmárovi cez Singleton
-    Console.WriteLine("Vytváram farmára, peňazí má: " + Farmar.Instance.Peniaze + " €");
+    Console.WriteLine("--- TEST HLADU A ROZMNOŽOVANIA ---");
 
-    // 2. Kúpime jednu kravu na farmu
+    // 1. Kúpime "rodičov" - Kravu (samica) a Býka (samec)
     Farmar.Instance.KupStatok(new Dobytok(TypyDobytka.Krava));
+    Farmar.Instance.KupStatok(new Dobytok(TypyDobytka.Byk));
 
-    // Kúpime do skladu 10x mlieko a 10x obilie, nech má zákazník čo kupovať
+    // 2. Kúpime dostatok KRMIVA (napr. Obilie), inak nám na 16. tiku obaja zomrú!
     for (int i = 0; i < 10; i++)
     {
-        Farmar.Instance.KupStatok(new Produkt(TypyProduktov.KravskeMlieko));
         Farmar.Instance.KupStatok(new Produkt(TypyProduktov.Obilie));
     }
 
-    // Výpis PRED posunutím času
-    Console.WriteLine("\n--- PRED POSUNUTÍM ČASU ---");
-    Console.WriteLine("Vek kravy na farme: " + Farma.Instance.Statky[0].Vek);
-    Console.WriteLine("Vek prvého produktu v sklade: " + Sklad.Instance.UskladneneProdukty[0].Vek);
-    Console.WriteLine("Peňaženka farmára po našich nákupoch: " + Farmar.Instance.Peniaze + " €");
+    Console.WriteLine("\n[POČIATOČNÝ STAV]");
+    Console.WriteLine($"Počet zvierat na farme: {Farma.Instance.Statky.OfType<Zviera>().Count()}");
+    Console.WriteLine($"Krmivo (Obilie) v sklade: {Sklad.Instance.ZistiPocet(TypyProduktov.Obilie)}");
+    Console.WriteLine($"Hnoj v sklade: {Sklad.Instance.ZistiPocet(TypyProduktov.Hnoj)}");
 
-    // Zobrazenie prázdneho lístka
-    Console.WriteLine("\n" + SpravcaLudi.Instance.Clovek.ZiskajNakupnyListokText());
-
-    // 3. Posun času o 15 tikov! Toto spustí zákazníkov nákup v SpravcaLudi.
-    Console.WriteLine("\n=== ČAKÁME 15 SEKÚND (TIKOV) NA ZÁKAZNÍKA ===");
     Farma.Instance.PosunCas(15);
+    Console.WriteLine();
 
-    // Výpis PO posunutí času a nákupe zákazníka
-    Console.WriteLine("\n--- PO POSUNUTÍ ČASU ---");
-    Console.WriteLine("Vek kravy na farme teraz je: " + Farma.Instance.Statky[0].Vek);
+    Farma.Instance.PosunCas(1);
 
-    // Sklad mohol zákazník vykúpiť, preto použijeme bezpečnejší výpis
-    var prvyProdukt = Sklad.Instance.UskladneneProdukty.FirstOrDefault();
-    if (prvyProdukt != null)
+    Console.WriteLine($"Vek Kravy: {Farma.Instance.Statky[0].Vek}");
+    Console.WriteLine($"Krmivo (Obilie) v sklade: {Sklad.Instance.ZistiPocet(TypyProduktov.Obilie)} (Malo klesnúť o 2!)");
+    Console.WriteLine($"Hnoj v sklade: {Sklad.Instance.ZistiPocet(TypyProduktov.Hnoj)} (Malo stúpnuť o 2!)");
+
+    // 4. FÁZA 2: Test Reprodukcie (Posun o ďalších 24 tikov, spolu budú mať vek 40)
+    // Na tiku 20 bol Býk pripravený, ale Krava ešte nie. 
+    // Na tiku 40 už budú obaja pripravení!
+    Console.WriteLine("\n=== ČAKÁME ĎALŠÍCH 24 SEKÚND (TEST ROZMNOŽOVANIA) ===");
+    Farma.Instance.PosunCas(24);
+
+    Console.WriteLine("\n[STAV PO 40 TIKOCH]");
+
+    var vsetkyZvierata = Farma.Instance.Statky.OfType<Zviera>().ToList();
+    Console.WriteLine($"Počet zvierat na farme: {vsetkyZvierata.Count} (Mali by byť 3!)");
+
+    // Vypíšeme si všetky zvieratá, aby sme videli novonarodené mláďa
+    foreach (var z in vsetkyZvierata)
     {
-        Console.WriteLine("Vek nejakého zvyšného produktu v sklade je: " + prvyProdukt.Vek);
+        Console.WriteLine($"- Názov: {z.Nazov}, Vek: {z.Vek}, Pohlavie: {(z.Pohlavie ? "Samec" : "Samica")}");
     }
-
-    // 4. Skontrolujeme, či zákazník nakúpil, koľko nám zaplatil a či je spokojný
-    Console.WriteLine("\n" + SpravcaLudi.Instance.Clovek.ZiskajNakupnyListokText());
-    Console.WriteLine($"Spokojnosť zákazníka s nákupom: {SpravcaLudi.Instance.Clovek.SpokojnySNakupom}");
-    Console.WriteLine("Konečná peňaženka farmára: " + Farmar.Instance.Peniaze + " €");
 }

@@ -6,7 +6,7 @@ namespace FarmSimulator.Core.Enums.Dobytok
 {
     // Dátový prepis pre jeden druh dobytka
     public record TypDobytkaInfo(
-        string NazovObrazka,
+        string Nazov,
         int KupnaCena,
         int PredajnaCena,
         int KonstantaHlad,

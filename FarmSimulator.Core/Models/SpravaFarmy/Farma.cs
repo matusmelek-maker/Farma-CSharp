@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FarmSimulator.Core.Models.Farma
+namespace FarmSimulator.Core.Models.SpravaFarmy
 {
     public class Farma
     {

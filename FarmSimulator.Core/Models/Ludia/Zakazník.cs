@@ -1,4 +1,4 @@
-﻿using FarmSimulator.Core.Models.Farma;
+﻿using FarmSimulator.Core.Models.SpravaFarmy;
 using FarmSimulator.Core.Models.Ludia;
 using FarmSimulator.Core.Models.Produkty;
 using System;
