@@ -1,15 +1,15 @@
-﻿using FarmSimulator.Core.Enums.AtrakcneZviera;
+﻿using FarmSimulator.Core.Models.Ludia;
+using FarmSimulator.Core.Models.SpravaFarmy;
 using FarmSimulator.Core.Models.Statky.Interfaces;
 using FarmSimulator.Core.Models.Statky.Zvierata;
+using FarmSimulator.Core.Properties.AtrakcneZviera; // Upravený namespace pre record
+using System;
 
 namespace FarmSimulator.Core.Models.Statky.Zvierata.AtrakcneZviera
 {
     public class AtrakcneZviera : Zviera, IProdukcne
     {
         public TypAtrakcnehoZvierataInfo TypInfo { get; }
-
-        // Definujeme udalosť pre vygenerovanie zisku (namiesto priameho volania Farmára)
-        public event Action<int>? OnZiskVygenerovany;
 
         public AtrakcneZviera(TypAtrakcnehoZvierataInfo info)
             : base(info.NazovObrazka, info.KupnaCena, info.PredajnaCena, info.TypTovaru,
@@ -26,19 +26,19 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata.AtrakcneZviera
         }
 
         public void Produkcia()
-        {/*
-            // V C# používame Singleton pre SpravcaLudi (ak ho máš tak implementovaný)
-            var clovek = SpravcaLudi.Instance.GetClovek();
+        {
+            var zakaznik = SpravcaLudi.Instance.Clovek;
 
-            if (clovek != null && clovek.IsSpokojnySNakupom)
+            // Kontrola spokojnosti a zisk
+            if (zakaznik.SpokojnySNakupom)
             {
-                // NAMIESTO: Farmar.Instance.SetPeniaze(...)
-                // Vyvoláme udalosť, že sme zarobili
-                OnZiskVygenerovany?.Invoke(this.TypInfo.CenaJazdy);
+                // Voláme metódu, ktorú si (dúfam) vytvoril v Farmar.cs na bezpečnú zmenu peňazí
+                Farmar.Instance.AktualizujPeniaze(this.TypInfo.CenaJazdy);
 
-                // Reset spokojnosti (podľa tvojej logiky)
-                clovek.IsSpokojnySNakupom = false;
-            }*/
+                zakaznik.NastavSpokojnost(false);
+
+                Console.WriteLine($"[Atrakcia] {Nazov} zarobil {TypInfo.CenaJazdy} €. Farmár má teraz {Farmar.Instance.Peniaze} €.");
+            }
         }
 
         protected override Zviera VytvorKlon()

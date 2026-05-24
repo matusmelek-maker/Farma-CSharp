@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FarmSimulator.Core.Enums.AtrakcneZviera
+namespace FarmSimulator.Core.Properties.AtrakcneZviera
 {
     public record TypAtrakcnehoZvierataInfo(
         string NazovObrazka,
