@@ -1,34 +1,45 @@
-﻿using FarmSimulator.Core.Models.SpravaFarmy;
-using FarmSimulator.Core.Models.Ludia;
-using FarmSimulator.Core.Properties.AtrakcneZviera;
-using FarmSimulator.Core.Models.Statky.Zvierata.AtrakcneZviera;
+﻿using FarmSimulator.Core.Enums.Zelenina;
+using FarmSimulator.Core.Models.Produkty;
+using FarmSimulator.Core.Models.SpravaFarmy;
+using FarmSimulator.Core.Models.Statky.Rastliny.Zelenina;
+using FarmSimulator.Core.Properties.Produkt;
 using System;
+// Pridaj si tu tvoje usingy pre Produkt, TypyProduktov, Zeleninu atď.
 
-Console.WriteLine("--- TEST ATRAKCIE A ZISKU ---");
+Console.WriteLine("=== TEST SKLADU A HNOJENIA RASTLINY ===");
 
-// 1. Pripravíme si farmára a zákazníka
-var farmar = Farmar.Instance;
-var zakaznik = SpravcaLudi.Instance.Clovek;
+// 1. Vyčistíme sklad (pre istotu, aby sme mali čistý štít pre test)
+Sklad.Instance.UskladneneProdukty.Clear();
 
-Console.WriteLine($"Počiatočný stav peňazí: {farmar.Peniaze} €");
+// 2. Vytvoríme a pridáme 2 kusy Hnoja do skladu
+// (Použi metódu na pridanie, akú máš v Sklade. Ak nemáš, daj len Add)
+var hnoj1 = new Produkt(TypyProduktov.Hnoj);
+var hnoj2 = new Produkt(TypyProduktov.Hnoj);
 
-// 2. Kúpime koňa (Atrakčné zviera)
-var konInfo = TypyAtrakcnychZvierat.Kon;
-var mojKon = new AtrakcneZviera(konInfo);
-Farma.Instance.PridajStatok(mojKon);
+Sklad.Instance.UskladneneProdukty.Add(hnoj1);
+Sklad.Instance.UskladneneProdukty.Add(hnoj2);
 
-Console.WriteLine($"Kúpil som: {mojKon.Nazov} za {mojKon.KupnaCena} €");
+Console.WriteLine($"[Sklad] Počiatočný stav hnoja: {Sklad.Instance.UskladneneProdukty.Count} ks");
 
-// 3. Simulujeme, že zákazník práve niečo nakúpil a je spokojný
-// Týmto simulujeme stav, kedy má atrakcia čo "zinkasovať"
-zakaznik.NastavSpokojnost(true);
-Console.WriteLine("Zákazník je teraz spokojný a pripravený na atrakciu.");
+// 3. Vytvoríme rastlinu (Zeleninu - napr. Mrkvu alebo čo máš v systéme definované)
+// (Uprav si parametre podľa toho, ako máš urobený konštruktor pre Zeleninu)
+var mojaRastlina = new Zelenina(TypyZeleniny.Mrkva);
 
-// 4. Simulujeme Tik (Farma posunie čas, zavolá VykonajAkcie -> Produkcia)
-Console.WriteLine("\n--- Simulujem posun času (Tik) ---");
-mojKon.VykonajAkcie(); // Toto vnútri zavolá Produkcia(), ktorá zoberie peniaze
+Console.WriteLine($"\n[Rastlina] Vytvorená: {mojaRastlina.Nazov}");
+Console.WriteLine($"[Rastlina] Je pohnojená pred akciou? {mojaRastlina.Pohnojene}");
+Console.WriteLine($"[Rastlina] Počet plodov pred akciou: {mojaRastlina.PocetPlodov}");
 
-// 5. Kontrola výsledku
-Console.WriteLine($"\n[VÝSLEDOK TESTU]");
-Console.WriteLine($"Konečný stav peňazí farmára: {farmar.Peniaze} €");
-Console.WriteLine($"Je zákazník stále spokojný? {zakaznik.SpokojnySNakupom} (Malo by byť False)");
+// 4. Vykonáme hnojenie
+Console.WriteLine("\n--- Spúšťam PrijmiHnoj() ---");
+mojaRastlina.PrijmiHnoj();
+
+// 5. Výsledky testu
+Console.WriteLine("\n=== VÝSLEDKY TESTU ===");
+Console.WriteLine($"[Rastlina] Je pohnojená po akcii? {mojaRastlina.Pohnojene} (Malo by byť True)");
+Console.WriteLine($"[Rastlina] Počet plodov po akcii: {mojaRastlina.PocetPlodov} (Malo by byť 2)");
+Console.WriteLine($"[Sklad] Zostatok hnoja: {Sklad.Instance.UskladneneProdukty.Count} ks (Malo by byť 1)");
+
+// 6. Otestujeme, či si nevezme hnoj, keď už je pohnojená
+Console.WriteLine("\n--- Spúšťam PrijmiHnoj() druhýkrát ---");
+mojaRastlina.PrijmiHnoj();
+Console.WriteLine($"[Sklad] Zostatok hnoja: {Sklad.Instance.UskladneneProdukty.Count} ks (Malo by ostať 1, lebo rastlina už hnoj má)");

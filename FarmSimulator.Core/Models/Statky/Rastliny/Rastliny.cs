@@ -1,5 +1,7 @@
-﻿using FarmSimulator.Core.Properties.Statok;
-using FarmSimulator.Core.Models.Produkty;
+﻿using FarmSimulator.Core.Models.Produkty;
+using FarmSimulator.Core.Models.SpravaFarmy;
+using FarmSimulator.Core.Properties.Produkt;
+using FarmSimulator.Core.Properties.Statok;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,8 +15,6 @@ namespace FarmSimulator.Core.Models.Statky.Rastliny
         public int StadiumRastu { get; set; }
         public int PocetPlodov { get; private set; }
 
-        // Pomocný zoznam pre použitý hnoj (ako v Jave)
-        private List<Produkt> pouzityHnoj = new();
         private string nazovObrazka;
         private int kupnaCena;
         private int predajnaCena;
@@ -22,8 +22,6 @@ namespace FarmSimulator.Core.Models.Statky.Rastliny
         private TypObchodnehoTovaru typTovaru;
         private int zivotnost;
 
-        // Eventy pre odstrihnutie Skladu/Farmy
-        public event Action<Produkt>? OnHnojSpotrebovany;
 
         protected Rastlina(string nazovObrazka, int kupnaCena, int predajnaCena, bool zije, TypObchodnehoTovaru typ, int zivotnost)
             : base(nazovObrazka, kupnaCena, predajnaCena, zije, typ, zivotnost)
@@ -39,7 +37,6 @@ namespace FarmSimulator.Core.Models.Statky.Rastliny
         /// </summary>
         public override void VykonajAkcie()
         {
-            // base.Tik() by malo zvyšovať vek, zomri() kontroluje životnosť
             this.Zomri();
             this.PrijmiHnoj();
         }
@@ -49,39 +46,28 @@ namespace FarmSimulator.Core.Models.Statky.Rastliny
         /// Ak je pohnojená, produkuje 2 plody, inak 1.
         /// </summary>
         public void PrijmiHnoj()
-        {/*
-            if (!this.Pohnojene)
+        {
+            // Ak už je pohnojená, neriešime ďalej
+            if (Pohnojene) return;
+
+            // Sklad sa sám pozrie, či má Hnoj. Ak áno, rovno ho vymaže a vráti true.
+            if (Sklad.Instance.OdoberProdukt(TypyProduktov.Hnoj))
             {
-                // Hľadáme hnoj na farme (používame LINQ)
-                var hnojVskladu = Farma.Instance.Statky
-                    .OfType<Produkt>()
-                    .FirstOrDefault(p => p.TypInfo.Typ == TypyProduktov.Hnoj.Typ && p.Zije);
-
-                if (hnojVskladu != null)
-                {
-                    this.pouzityHnoj.Add(hnojVskladu);
-                    hnojVskladu.Zomri(); // Hnoj sa "spotrebuje"
-                    this.Pohnojene = true;
-
-                    // NAMIESTO: Sklad.Instance.ZmenPocetStatokSklad(hnojVskladu, -1);
-                    // Informujeme engine o spotrebe
-                    OnHnojSpotrebovany?.Invoke(hnojVskladu);
-                }
-
-                // Nastavenie počtu plodov podľa hnojenia
-                this.PocetPlodov = this.Pohnojene ? 2 : 1;
-            }*/
+                Pohnojene = true;
+                PocetPlodov = 2;
+                Console.WriteLine($"[Rastlina] {Nazov} sa úspešne pohnojila.");
+            }
+            else
+            {
+                // Ak hnoj v sklade nebol, bude mať len 1 plod
+                PocetPlodov = 1;
+            }
         }
 
         /// <summary>
         /// Vráti zoznam spotrebovaných hnojív a vyčistí interný zoznam.
         /// </summary>
-        public List<Produkt> GetPouzityHnoj()
-        {
-            var result = new List<Produkt>(this.pouzityHnoj);
-            this.pouzityHnoj.Clear();
-            return result;
-        }
+        
 
     }
 }
