@@ -31,7 +31,7 @@ Console.WriteLine($"[Rastlina] Počet plodov pred akciou: {mojaRastlina.PocetPlo
 
 // 4. Vykonáme hnojenie
 Console.WriteLine("\n--- Spúšťam PrijmiHnoj() ---");
-mojaRastlina.PrijmiHnoj();
+mojaRastlina.PrijmiZiviny();
 
 // 5. Výsledky testu
 Console.WriteLine("\n=== VÝSLEDKY TESTU ===");
@@ -41,5 +41,5 @@ Console.WriteLine($"[Sklad] Zostatok hnoja: {Sklad.Instance.UskladneneProdukty.C
 
 // 6. Otestujeme, či si nevezme hnoj, keď už je pohnojená
 Console.WriteLine("\n--- Spúšťam PrijmiHnoj() druhýkrát ---");
-mojaRastlina.PrijmiHnoj();
+mojaRastlina.PrijmiZiviny();
 Console.WriteLine($"[Sklad] Zostatok hnoja: {Sklad.Instance.UskladneneProdukty.Count} ks (Malo by ostať 1, lebo rastlina už hnoj má)");
