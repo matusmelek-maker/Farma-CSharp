@@ -1,13 +1,13 @@
-﻿using FarmSimulator.Core.Enums.Statok;
+﻿using FarmSimulator.Core.Enums.Produkt;
+using FarmSimulator.Core.Enums.Statok;
 
 using FarmSimulator.Core.Enums.Zvierata;
-
 using FarmSimulator.Core.Models.Produkty;
 using FarmSimulator.Core.Models.SpravaFarmy;
 
-namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Zvierata
+namespace FarmSimulator.Core.Models.Statky.Zvierata
 {
-    public abstract class Zviera : ProdukcneStatky
+    public abstract class Zviera : Statok
     {
         // --- Polia a Vlastnosti (Presne podľa Javy) ---
         public int KonstantaHlad { get; }
@@ -88,50 +88,49 @@ namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Zvierata
             RozmnozSa();
             NajedzSa();
             Zomri();
-            SpracujNaMeso();
         }
 
         // --- Reprodukcia ---
         public void RozmnozSa()
-{
-    // 1. Zistenie, či je čas na reprodukciu (v C# používame Properties namiesto getVek())
-    if (Vek != 0 && Vek % KonstantaReprodukcie == 0)
-    {
-        PripravenyNaReprodukciu = true;
-    }
-
-    // 2. Ak je samec (Pohlavie = true) a je pripravený, hľadá samicu
-    if (PripravenyNaReprodukciu && Pohlavie)
-    {
-        // 3. Použitie LINQ na nájdenie vhodných samíc (Koniec dlhých for-cyklov a if-ov!)
-        var vhodneSamice = Farma.Instance.Statky
-            .OfType<Zviera>() // Zoberieme z farmy iba zvieratá
-            .Where(z => !z.Pohlavie && z.PripravenyNaReprodukciu && z.Druh == this.Druh)
-            .ToList(); // Urobíme si kópiu zoznamu, aby sme mohli bezpečne iterovať
-
-        foreach (var samica in vhodneSamice)
         {
-            // Šanca 50:50, čí klon to bude (používame tvoj private Random random)
-            Zviera noveZviera = (random.Next(100) < 50) ? this.VytvorKlon() : samica.VytvorKlon();
-
-            if (noveZviera != null)
+            // 1. Zistenie, či je čas na reprodukciu (v C# používame Properties namiesto getVek())
+            if (Vek != 0 && Vek % KonstantaReprodukcie == 0)
             {
-                // 4. Pridanie zvieratka PRIAMO na Farmu
-                Farma.Instance.PridajStatok(noveZviera);
+                PripravenyNaReprodukciu = true;
+            }
 
-                // 5. Reset stavu u oboch rodičov
-                this.PripravenyNaReprodukciu = false;
-                samica.PripravenyNaReprodukciu = false;
+            // 2. Ak je samec (Pohlavie = true) a je pripravený, hľadá samicu
+            if (PripravenyNaReprodukciu && Pohlavie)
+            {
+                // 3. Použitie LINQ na nájdenie vhodných samíc (Koniec dlhých for-cyklov a if-ov!)
+                var vhodneSamice = Farma.Instance.Statky
+                    .OfType<Zviera>() // Zoberieme z farmy iba zvieratá
+                    .Where(z => !z.Pohlavie && z.PripravenyNaReprodukciu && z.Druh == this.Druh)
+                    .ToList(); // Urobíme si kópiu zoznamu, aby sme mohli bezpečne iterovať
 
-                // 6. Pridanie do interného zoznamu zvierata
-                this.pridane.Add(noveZviera);
+                foreach (var samica in vhodneSamice)
+                {
+                    // Šanca 50:50, čí klon to bude (používame tvoj private Random random)
+                    Zviera noveZviera = (random.Next(100) < 50) ? this.VytvorKlon() : samica.VytvorKlon();
 
-                // Samec sa práve rozmnožil, nemusí v tomto tiku hľadať ďalšie samice
-                break; 
+                    if (noveZviera != null)
+                    {
+                        // 4. Pridanie zvieratka PRIAMO na Farmu
+                        Farma.Instance.PridajStatok(noveZviera);
+
+                        // 5. Reset stavu u oboch rodičov
+                        this.PripravenyNaReprodukciu = false;
+                        samica.PripravenyNaReprodukciu = false;
+
+                        // 6. Pridanie do interného zoznamu zvierata
+                        this.pridane.Add(noveZviera);
+
+                        // Samec sa práve rozmnožil, nemusí v tomto tiku hľadať ďalšie samice
+                        break; 
+                    }
+                }
             }
         }
-    }
-}
 
         // --- Hladovanie ---
         public void NajedzSa()
@@ -183,24 +182,6 @@ namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Zvierata
             }
         }
 
-        // --- Spracovanie na mäso ---
-        public void SpracujNaMeso()
-        {/*
-            // C# Pattern matching: overíme či je to Dobytok a či je mŕtvy vekom
-            if (this is Dobytok.Dobytok dobytok && !Zije && Vek >= Zivotnost)
-            {
-                // Tu predpokladáme, že Dobytok má prístup k zoznamu produktov zo svojho Typu
-                foreach (var produktInfo in dobytok.Info.Produkty)
-                {
-                    if (produktInfo.Kategoria == KategoriaProduktu.Jednorazovy)
-                    {
-                        var produkt = new Produkt(produktInfo);
-                        pridaneProdukty.Add(produkt);
-                        Sklad.Instance.ZmenPocetStatokSklad(produkt, 1);
-                    }
-                }
-            }*/
-        }
 
         // --- Abstraktné metódy pre podtriedy ---
         protected abstract Zviera VytvorKlon();

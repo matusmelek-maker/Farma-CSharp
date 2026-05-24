@@ -2,17 +2,15 @@
 using FarmSimulator.Core.Enums.Produkt;
 using FarmSimulator.Core.Models.Produkty;
 using FarmSimulator.Core.Models.SpravaFarmy;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using FarmSimulator.Core.Models.Statky.Interfaces;
 
-namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Zvierata.Dobytok
+namespace FarmSimulator.Core.Models.Statky.Zvierata.Dobytok
 {
     /// <summary>
     /// Trieda reprezentuje dobytok, ktorý je špecifickým typom zvieraťa.
     /// Spravuje cyklus produkcie (mlieko, vajcia, vlna) na základe stavu nasýtenia.
     /// </summary>
-    public class Dobytok : Zviera
+    public class Dobytok : Zviera, IProdukcne, ISpracovatelnyNaMeso
     {
         // Property pre prístup k statickým dátam typu dobytka
         public TypDobytkaInfo Info { get; }
@@ -50,7 +48,7 @@ namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Zvierata.Dobytok
         /// <summary>
         /// Ak je zviera najedené, vyprodukuje opakované produkty (napr. mlieko).
         /// </summary>
-        public override void Produkcia()
+        public void Produkcia()
         {
             // 1. Pristupujeme priamo k property (bez isNajedene())
             if (this.Najedene)
@@ -97,6 +95,39 @@ namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Zvierata.Dobytok
         protected override Zviera VytvorKlon()
         {
             return new Dobytok(this.Info);
+        }
+
+        public void SpracujNaMeso()
+        {
+            // 1. Skontrolujeme, či zviera zomrelo prirodzene na starobu.
+            // (Ak zomrelo na hlad, Vek bude menší ako Zivotnost a nedá mäso).
+            if (Vek >= Zivotnost)
+            {
+                // 2. Prejdeme všetky produkty priradené tomuto typu dobytka v katalógu
+                foreach (var pInfo in Info.Produkty)
+                {
+                    // 3. Vyberieme LEN tie, ktoré sú jednorazové (Mäso, Koža...)
+                    if (pInfo.Kategoria == KategoriaProduktu.Jednorazovy)
+                    {
+                        // Vytvoríme konkrétny objekt produktu
+                        var novyProdukt = new Produkt(pInfo);
+
+                        // Pridáme si ho do internej evidencie (použi názov zoznamu, aký máš v triede)
+                        vyprodukovaneProdukty.Add(novyProdukt);
+
+                        // 4. Mágia novej architektúry: Mäso ide PRIAMO do Skladu
+                        Sklad.Instance.PridajProdukt(novyProdukt);
+
+                        // Pomocný výpis do konzoly pre lepší prehľad v CLI
+                        Console.WriteLine($"[Farma] {Nazov} (Vek: {Vek}) prirodzene uhynul a vyprodukoval: {novyProdukt.Nazov}");
+                    }
+                }
+            }
+            else
+            {
+                // Výpis pre prípad, že zviera zomrelo od hladu pred dosiahnutím veku
+                Console.WriteLine($"[Farma] {Nazov} uhynul predčasne (hlad/choroba) a nebol spracovaný na mäso.");
+            }
         }
     }
 }

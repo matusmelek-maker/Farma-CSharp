@@ -1,8 +1,10 @@
 ﻿using FarmSimulator.Core.Enums.AtrakcneZviera;
+using FarmSimulator.Core.Models.Statky.Interfaces;
+using FarmSimulator.Core.Models.Statky.Zvierata;
 
-namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Zvierata.AtrakcneZviera
+namespace FarmSimulator.Core.Models.Statky.Zvierata.AtrakcneZviera
 {
-    public class AtrakcneZviera : Zviera
+    public class AtrakcneZviera : Zviera, IProdukcne
     {
         public TypAtrakcnehoZvierataInfo TypInfo { get; }
 
@@ -23,7 +25,7 @@ namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Zvierata.AtrakcneZvie
             this.Produkcia();
         }
 
-        public override void Produkcia()
+        public void Produkcia()
         {/*
             // V C# používame Singleton pre SpravcaLudi (ak ho máš tak implementovaný)
             var clovek = SpravcaLudi.Instance.GetClovek();

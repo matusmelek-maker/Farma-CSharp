@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Rastliny
+namespace FarmSimulator.Core.Models.Statky.Rastliny
 {
-    public abstract class Rastlina : ProdukcneStatky
+    public abstract class Rastlina : Statok
     {
         // Vlastnosti rastliny
         public bool Pohnojene { get; private set; }

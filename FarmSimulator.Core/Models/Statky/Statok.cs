@@ -17,6 +17,9 @@ namespace FarmSimulator.Core.Models.Statky
         public TypObchodnehoTovaru Typ { get; }
         public int Zivotnost { get; }
 
+        public event Action? OnZomrel;
+
+
         protected Statok(string nazovObrazka, int kupnaCena, int predajnaCena, bool zije, TypObchodnehoTovaru typ, int zivotnost)
         {
             Nazov = nazovObrazka;
@@ -57,7 +60,7 @@ namespace FarmSimulator.Core.Models.Statky
 
                 // POZNÁMKA: Volanie Sklad.Instance.ZmenPocetStatokSklad(this, -1) 
                 // tu zatiaľ nedávame, kým nenaprogramujeme Sklad v Core.
-
+                OnZomrel?.Invoke();
                 return true;
             }
             return false;

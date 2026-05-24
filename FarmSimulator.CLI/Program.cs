@@ -3,10 +3,10 @@ using FarmSimulator.Core.Enums.Zelenina;
 using FarmSimulator.Core.Models.SpravaFarmy;
 using FarmSimulator.Core.Models.Ludia;
 using FarmSimulator.Core.Models.Produkty;
-using FarmSimulator.Core.Models.Statky.ProdukcneStatky.Zvierata;
-using FarmSimulator.Core.Models.Statky.ProdukcneStatky.Zvierata.Dobytok;
 using System;
 using System.Linq;
+using FarmSimulator.Core.Models.Statky.Zvierata;
+using FarmSimulator.Core.Models.Statky.Zvierata.Dobytok;
 
 VytvorFarmara();
 

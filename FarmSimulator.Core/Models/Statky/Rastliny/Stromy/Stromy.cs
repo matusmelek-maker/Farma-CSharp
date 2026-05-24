@@ -1,8 +1,8 @@
-﻿
-using FarmSimulator.Core.Enums.Stromy;
+﻿using FarmSimulator.Core.Enums.Stromy;
 using FarmSimulator.Core.Models.Produkty;
+using FarmSimulator.Core.Models.Statky.Rastliny;
 
-namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Rastliny.Stromy
+namespace FarmSimulator.Core.Models.Statky.Rastliny.Stromy
 {
     public class Strom : Rastlina
     {
@@ -28,7 +28,7 @@ namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Rastliny.Stromy
             this.RastStromu();
         }
 
-        public override void Produkcia()
+        public void Produkcia()
         {
             // 1. Fáza: Samotný zber/produkcia plodov
             if (Vek != 0 && Vek % Info.ProdukcnyInterval == 0 && vyrasteny)

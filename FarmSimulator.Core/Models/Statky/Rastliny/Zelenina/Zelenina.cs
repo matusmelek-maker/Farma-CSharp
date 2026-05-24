@@ -1,7 +1,8 @@
 ﻿using FarmSimulator.Core.Enums.Zelenina;
 using FarmSimulator.Core.Models.Produkty;
+using FarmSimulator.Core.Models.Statky.Rastliny;
 
-namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Rastliny.Zelenina
+namespace FarmSimulator.Core.Models.Statky.Rastliny.Zelenina
 {
     public class Zelenina : Rastlina
     {
@@ -24,7 +25,7 @@ namespace FarmSimulator.Core.Models.Statky.ProdukcneStatky.Rastliny.Zelenina
             this.Produkcia();
         }
 
-        public override void Produkcia()
+        public void Produkcia()
         {
             /*
             // 1. Kontrola zberu (zelenina je pripravená na zber)
