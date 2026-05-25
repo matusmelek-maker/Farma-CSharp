@@ -4,18 +4,14 @@ using FarmSimulator.Core.Properties.Zvierata;
 using FarmSimulator.Core.Models.Produkty;
 using FarmSimulator.Core.Models.SpravaFarmy;
 using FarmSimulator.Core.Models.Statky.Interfaces;
-using System.Text.Json.Serialization; // Pridaný using pre JSON
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace FarmSimulator.Core.Models.Statky.Zvierata
 {
     public abstract class Zviera : Statok, IPrijimajuciZiviny
     {
-        // --- Polia a Vlastnosti pre JSON ---
         [JsonInclude] public int KonstantaHlad { get; protected set; }
-        [JsonInclude] public bool Pohlavie { get; protected set; } // true = samec, false = samica
+        [JsonInclude] public bool Pohlavie { get; protected set; }
         [JsonInclude] public int KonstantaReprodukcie { get; protected set; }
         [JsonInclude] public int IndexOhradky { get; protected set; }
         [JsonInclude] public DruhZvierata Druh { get; protected set; }
@@ -24,23 +20,19 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata
         [JsonInclude] public bool Najedene { get; set; }
         [JsonInclude] public int UrovenHladu { get; protected set; }
 
-        // Interné zoznamy (ArrayListy z Javy)
         private List<Zviera> pridane = new();
         private List<Produkt> zeleninaZjedena = new();
         private List<Produkt> pridaneProdukty = new();
 
-        // Logika pohybu (iba dáta pre UI)
         public double PoziciaX { get; set; } = 50;
         public double PoziciaY { get; set; } = 50;
         private double smerX;
         private double smerY;
         private Random random = new Random();
 
-        // BEZPARAMETRICKÝ KONŠTRUKTOR PRE JSON
         [JsonConstructor]
         protected Zviera() { }
 
-        // --- Konštruktor ---
         protected Zviera(string nazovObrazka, int kupnaCena, int predajnaCena, TypObchodnehoTovaru typ,
                          int konstantaHlad, bool pohlavie, int konstantaReprodukcie, int zivotnost,
                          int indexOhradky, DruhZvierata druh)
@@ -58,7 +50,6 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata
             InicializujSmerPohybu();
         }
 
-        // --- Logika Pohybu (Bez Timerov, volané z Engine) ---
         private void InicializujSmerPohybu()
         {
             double uhol;
@@ -76,11 +67,9 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata
             PoziciaX += smerX * rychlost;
             PoziciaY += smerY * rychlost;
 
-            // Odrazy od okrajov
             if (PoziciaX < 0 || PoziciaX > sirkaOhrady - 50) { smerX *= -1; }
             if (PoziciaY < 0 || PoziciaY > vyskaOhrady - 50) { smerY *= -1; }
 
-            // Náhodná zmena smeru (1% šanca)
             if (random.NextDouble() < 0.01)
             {
                 double deltaUhol = (random.NextDouble() - 0.5) * Math.PI / 4;
@@ -90,7 +79,6 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata
             }
         }
 
-        // --- Hlavné Akcie (Metóda VykonajAkcie) ---
         public override void VykonajAkcie()
         {
             RozmnozSa();
@@ -98,7 +86,6 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata
             Zomri();
         }
 
-        // --- Reprodukcia ---
         public void RozmnozSa()
         {
             if (Vek != 0 && Vek % KonstantaReprodukcie == 0)
@@ -129,7 +116,6 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata
             }
         }
 
-        // --- Hladovanie ---
         public void PrijmiZiviny()
         {
             if (Vek != 0 && Vek % KonstantaHlad == 0)

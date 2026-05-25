@@ -1,19 +1,15 @@
 ﻿using FarmSimulator.Core.Models.Ludia;
 using FarmSimulator.Core.Models.SpravaFarmy;
 using FarmSimulator.Core.Models.Statky.Interfaces;
-using FarmSimulator.Core.Models.Statky.Zvierata;
 using FarmSimulator.Core.Properties.AtrakcneZviera;
-using System.Text.Json.Serialization; // Pridaný using pre JSON
-using System;
+using System.Text.Json.Serialization;
 
 namespace FarmSimulator.Core.Models.Statky.Zvierata.AtrakcneZviera
 {
     public class AtrakcneZviera : Zviera, IProdukcne
     {
-        // Pripravené pre JSON (pridané JsonInclude a protected set)
         [JsonInclude] public TypAtrakcnehoZvierataInfo TypInfo { get; protected set; } = null!;
 
-        // BEZPARAMETRICKÝ KONŠTRUKTOR PRE JSON
         [JsonConstructor]
         protected AtrakcneZviera() { }
 
@@ -39,7 +35,6 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata.AtrakcneZviera
             {
                 Farmar.Instance.AktualizujPeniaze(this.TypInfo.CenaJazdy);
                 zakaznik.NastavSpokojnost(false);
-                Console.WriteLine($"[Atrakcia] {Nazov} zarobil {TypInfo.CenaJazdy} €. Farmár má teraz {Farmar.Instance.Peniaze} €.");
             }
         }
 

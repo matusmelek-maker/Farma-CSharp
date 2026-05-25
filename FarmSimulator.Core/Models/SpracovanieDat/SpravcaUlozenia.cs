@@ -1,8 +1,5 @@
 ﻿using FarmSimulator.Core.Models.SpracovanieDat;
 using FarmSimulator.Core.Models.SpravaFarmy;
-using System;
-using System.IO;
-using System.Linq;
 using System.Text.Json;
 
 namespace FarmSimulator.Core.SpracovanieDat
@@ -24,7 +21,6 @@ namespace FarmSimulator.Core.SpracovanieDat
             string jsonText = JsonSerializer.Serialize(stav, moznosti);
             File.WriteAllText(CestaKSuboru, jsonText);
 
-            Console.WriteLine($"\n[Systém] Úspešne uložené do: {CestaKSuboru}");
         }
 
         public static bool NacitajHru()
@@ -55,13 +51,12 @@ namespace FarmSimulator.Core.SpracovanieDat
                         Sklad.Instance.PridajProdukt(p);
                     }
 
-                    Console.WriteLine("\n[Systém] Úspešne načítané zo súboru.");
                     return true;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"\n[Chyba] Nepodarilo sa načítať hru: {ex.Message}");
+                Console.Error.WriteLine($"\n[Chyba] Nepodarilo sa načítať hru: {ex.Message}");
             }
 
             return false;

@@ -1,8 +1,5 @@
 ﻿using FarmSimulator.Core.Properties.Statok;
 using FarmSimulator.Core.Properties.Zvierata;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FarmSimulator.Core.Properties.AtrakcneZviera
 {

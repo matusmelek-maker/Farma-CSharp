@@ -4,7 +4,6 @@ using FarmSimulator.Core.Properties.Produkt;
 
 namespace FarmSimulator.Core.Properties.Dobytok
 {
-    // Dátový prepis pre jeden druh dobytka
     public record TypDobytkaInfo(
         string Nazov,
         int KupnaCena,
@@ -16,7 +15,7 @@ namespace FarmSimulator.Core.Properties.Dobytok
         int IndexOhradky,
         DruhZvierata Druh,
         TypObchodnehoTovaru TypTovaru,
-        TypProduktuInfo[] Produkty // Pole produktov, ktoré zviera produkuje
+        TypProduktuInfo[] Produkty
     );
 
     public static class TypyDobytka

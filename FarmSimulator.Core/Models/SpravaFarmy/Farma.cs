@@ -1,18 +1,14 @@
 ﻿using FarmSimulator.Core.Models.Ludia;
 using FarmSimulator.Core.Models.Statky;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace FarmSimulator.Core.Models.SpravaFarmy
 {
     public class Farma
     {
-        // Singleton vzor (rovnako ako si mal v Jave, ale s C# syntaxou)
         private static Farma? _instance;
         public static Farma Instance => _instance ??= new Farma();
 
-        // Zoznam všetkých statkov na farme
         public List<Statok> Statky { get; private set; }
 
         private Farma()
@@ -23,43 +19,34 @@ namespace FarmSimulator.Core.Models.SpravaFarmy
         public void PridajStatok(Statok statok)
         {
             Statky.Add(statok);
-            Console.WriteLine($"[Farma] Pridaný nový statok: {statok.Typ}");
+            Console.WriteLine($"Pridaný nový statok: {statok.Nazov}");
         }
 
-        /// <summary>
-        /// Hlavná metóda, ktorú bude volať CLI alebo UI na simuláciu plynutia času.
-        /// </summary>
         public void PosunCas(int pocetTikov)
         {
             Console.WriteLine($"\n--- Posúvam čas o {pocetTikov} tikov (sekúnd) ---");
 
             for (int tik = 0; tik < pocetTikov; tik++)
             {
-                // Kópia zoznamu pre bezpečné prechádzanie
                 var aktualneStatky = Statky.ToList();
 
                 foreach (var statok in aktualneStatky)
                 {
                     if (statok.Zije)
                     {
-                        statok.Tik(); // Aktualizuje vek, zdravie, atď.
-                        statok.VykonajAkcie(); // Zviera vyhladne, rozmnoží sa, atď.
+                        statok.Tik();
+                        statok.VykonajAkcie();
                     }
                 }
 
                 Sklad.Instance.PosunCasVSklade();
-                SpravcaLudi.Instance.Tik(); // Pridaný riadok!
+                SpravcaLudi.Instance.Tik();
             }
 
-            // Čistenie zoznamu od mŕtvych statkov
             int povodnyPocet = Statky.Count;
             Statky.RemoveAll(s => !s.Zije);
             int mrtve = povodnyPocet - Statky.Count;
 
-            if (mrtve > 0)
-            {
-                Console.WriteLine($"[Upozornenie] Počas tohto obdobia zomrelo {mrtve} statkov.");
-            }
         }
 
         public void VypisStatky()
@@ -73,32 +60,18 @@ namespace FarmSimulator.Core.Models.SpravaFarmy
 
         public Statok? NajdiNajstarsiStatok(Statok hladanyTyp)
         {
-            // Tu pridaj otáznik, aby C# vedel, že to môže byť na začiatku prázdne
-            Statok? najstarsi = null;
-            int maxVek = -1;
-
-            foreach (var s in Statky)
-            {
-                if (s.Zije && s.Nazov == hladanyTyp.Nazov)
-                {
-                    if (s.Vek > maxVek)
-                    {
-                        maxVek = s.Vek;
-                        najstarsi = s;
-                    }
-                }
-            }
-
-            return najstarsi;
+            return Statky
+                .Where(s => s.Zije && s.Nazov == hladanyTyp.Nazov)
+                .OrderByDescending(s => s.Vek)
+                .FirstOrDefault();
         }
 
         public void OdstranStatok(Statok statok)
         {
-            // C# List má vstavanú metódu Remove, ktorá nájde konkrétny objekt a vymaže ho
             if (Statky.Contains(statok))
             {
                 Statky.Remove(statok);
-                Console.WriteLine($"[Farma] Statok bol z farmy odstránený.");
+                Console.WriteLine($"Statok {statok.Nazov} bol z farmy odstránený.");
             }
         }
     }

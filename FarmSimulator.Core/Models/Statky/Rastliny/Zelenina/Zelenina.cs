@@ -3,7 +3,6 @@ using FarmSimulator.Core.Models.Produkty;
 using FarmSimulator.Core.Models.SpravaFarmy;
 using FarmSimulator.Core.Models.Statky.Interfaces;
 using System.Text.Json.Serialization;
-using System;
 
 namespace FarmSimulator.Core.Models.Statky.Rastliny.Zelenina
 {
@@ -14,7 +13,6 @@ namespace FarmSimulator.Core.Models.Statky.Rastliny.Zelenina
         public event Action<Zelenina>? OnStadiumZmenene;
         public event Action<Produkt>? OnZeleninaVyprodukovana;
 
-        // JSON konštruktor
         [JsonConstructor]
         protected Zelenina() { }
 
@@ -56,7 +54,6 @@ namespace FarmSimulator.Core.Models.Statky.Rastliny.Zelenina
                     OnZeleninaVyprodukovana?.Invoke(produkt);
                 }
 
-                Console.WriteLine($"[Zelenina] {Nazov} bola zozbieraná (Plodov: {PocetPlodov}) a odumiera.");
                 this.Zije = false;
             }
             else if (Vek == 3)

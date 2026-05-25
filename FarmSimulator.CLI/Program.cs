@@ -7,18 +7,11 @@ using FarmSimulator.Core.Models.Statky.Zvierata.Dobytok;
 using FarmSimulator.Core.Models.Statky.Rastliny.Stromy;
 using FarmSimulator.Core.Models.Statky.Rastliny.Zelenina;
 using FarmSimulator.Core.Models.Statky;
-using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq; // Potrebné pre LINQ dotazy (napr. FirstOrDefault)
 
 namespace FarmSimulator.CLI
 {
     class Program
     {
-        // TOTO JE NAŠE ZJEDNODUŠENIE! 
-        // Tu zadefinujeme náš "obchod". Kľúč je slovo, hodnota je funkcia, ktorá vytvorí statok.
-        // StringComparer.OrdinalIgnoreCase zabezpečí, že nezáleží na tom, či napíšeš "Krava" alebo "krava".
         private static readonly Dictionary<string, Func<Statok>> KatalogObchodu = new(StringComparer.OrdinalIgnoreCase)
         {
             { "krava", () => new Dobytok(TypyDobytka.Krava) },
@@ -69,16 +62,13 @@ namespace FarmSimulator.CLI
                     else Console.WriteLine("Chyba: Musíš zadať počet dní. Príklad: dotnet run posun 5");
                     break;
 
-                // NOVÝ KUP (Zjednodušený bez IFov!)
                 case "kup":
                     if (args.Length > 1)
                     {
                         string coKupit = args[1];
 
-                        // Pozrieme sa, či slovo existuje v našom slovníku
                         if (KatalogObchodu.TryGetValue(coKupit, out Func<Statok>? vytvorStatok))
                         {
-                            // Spustíme funkciu, ktorá vyrobí objekt
                             Statok novyStatok = vytvorStatok();
 
                             if (Farmar.Instance.KupStatok(novyStatok))
@@ -88,7 +78,6 @@ namespace FarmSimulator.CLI
                         }
                         else
                         {
-                            // Ak napísal niečo zlé, rovno mu vypíšeme všetky kľúče z nášho slovníka
                             string ponuka = string.Join(", ", KatalogObchodu.Keys);
                             Console.WriteLine($"Neznámy tovar: '{coKupit}'. Dostupné sú: {ponuka}");
                         }
@@ -96,21 +85,18 @@ namespace FarmSimulator.CLI
                     else Console.WriteLine("Chyba: Musíš zadať, čo chceš kúpiť. Príklad: dotnet run kup krava");
                     break;
 
-                // NOVÝ PREDAJ
                 case "predaj":
                     if (args.Length > 1)
                     {
                         string coPredat = args[1].ToLower();
 
-                        // Nájdeme v sklade prvý produkt, ktorého názov sa presne zhoduje s tým, čo chceš predať
                         var produkt = Sklad.Instance.UskladneneProdukty
                             .FirstOrDefault(p => p.Nazov.ToLower() == coPredat);
 
                         if (produkt != null)
                         {
-                            // 1. Zmažeme produkt zo skladu
                             Sklad.Instance.UskladneneProdukty.Remove(produkt);
-                            // 2. Pripíšeme farmárovi peniaze
+
                             Farmar.Instance.AktualizujPeniaze(produkt.PredajnaCena);
 
                             Console.WriteLine($"[Trh] Úspešne si predal '{produkt.Nazov}' za {produkt.PredajnaCena} $.");
@@ -142,10 +128,23 @@ namespace FarmSimulator.CLI
             Console.WriteLine($"Peniaze farmára: {Farmar.Instance.Peniaze} $");
 
             Console.WriteLine($"\n--- Statky na farme ({Farma.Instance.Statky.Count}) ---");
-            Farma.Instance.VypisStatky();
+            if (Farma.Instance.Statky.Count == 0) Console.WriteLine("Farma je prázdna.");
+
+            // Zhlukovanie pomocou LINQ pre pekný výpis
+            var zoskupeneStatky = Farma.Instance.Statky
+                .GroupBy(s => s.Nazov)
+                .Select(g => $"- {g.Key}: {g.Count()} ks");
+
+            foreach (var s in zoskupeneStatky) Console.WriteLine(s);
 
             Console.WriteLine($"\n--- Sklad ({Sklad.Instance.UskladneneProdukty.Count}) ---");
-            Sklad.Instance.VypisProdukty();
+            if (Sklad.Instance.UskladneneProdukty.Count == 0) Console.WriteLine("Sklad je prázdny.");
+
+            var zoskupeneProdukty = Sklad.Instance.UskladneneProdukty
+                .GroupBy(p => p.Nazov)
+                .Select(g => $"- {g.Key}: {g.Count()} ks");
+
+            foreach (var p in zoskupeneProdukty) Console.WriteLine(p);
 
             Console.WriteLine("==================\n");
         }

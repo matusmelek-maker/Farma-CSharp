@@ -3,20 +3,16 @@ using FarmSimulator.Core.Properties.Produkt;
 using FarmSimulator.Core.Models.Produkty;
 using FarmSimulator.Core.Models.SpravaFarmy;
 using FarmSimulator.Core.Models.Statky.Interfaces;
-using System.Text.Json.Serialization; // Pridaný using pre JSON
-using System.Collections.Generic;
-using System;
+using System.Text.Json.Serialization;
 
 namespace FarmSimulator.Core.Models.Statky.Zvierata.Dobytok
 {
     public class Dobytok : Zviera, IProdukcne, ISpracovatelnyNaMeso
     {
-        // Pripravené pre JSON (pridané JsonInclude a protected set)
         [JsonInclude] public TypDobytkaInfo Info { get; protected set; } = null!;
 
         private List<Produkt> vyprodukovaneProdukty = new();
 
-        // BEZPARAMETRICKÝ KONŠTRUKTOR PRE JSON
         [JsonConstructor]
         protected Dobytok() { }
 
@@ -55,7 +51,6 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata.Dobytok
                         var novyProdukt = new Produkt(pInfo);
                         this.vyprodukovaneProdukty.Add(novyProdukt);
                         Sklad.Instance.PridajProdukt(novyProdukt);
-                        Console.WriteLine($"[Farma] {this.Nazov} vyprodukoval: {novyProdukt.Nazov}");
                     }
                 }
             }
@@ -84,7 +79,6 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata.Dobytok
                         var novyProdukt = new Produkt(pInfo);
                         vyprodukovaneProdukty.Add(novyProdukt);
                         Sklad.Instance.PridajProdukt(novyProdukt);
-                        Console.WriteLine($"[Farma] {Nazov} (Vek: {Vek}) prirodzene uhynul a vyprodukoval: {novyProdukt.Nazov}");
                     }
                 }
             }

@@ -3,18 +3,15 @@ using FarmSimulator.Core.Models.Statky.Interfaces;
 using FarmSimulator.Core.Properties.Produkt;
 using FarmSimulator.Core.Properties.Statok;
 using System.Text.Json.Serialization;
-using System;
 
 namespace FarmSimulator.Core.Models.Statky.Rastliny
 {
     public abstract class Rastlina : Statok, IPrijimajuciZiviny
     {
-        // Pripravené na ukladanie do JSON
         [JsonInclude] public bool Pohnojene { get; protected set; }
         [JsonInclude] public int StadiumRastu { get; protected set; }
         [JsonInclude] public int PocetPlodov { get; protected set; }
 
-        // JSON konštruktor
         [JsonConstructor]
         protected Rastlina() { }
 
@@ -40,7 +37,6 @@ namespace FarmSimulator.Core.Models.Statky.Rastliny
             {
                 Pohnojene = true;
                 PocetPlodov = 2;
-                Console.WriteLine($"[Rastlina] {Nazov} sa úspešne pohnojila.");
             }
             else
             {

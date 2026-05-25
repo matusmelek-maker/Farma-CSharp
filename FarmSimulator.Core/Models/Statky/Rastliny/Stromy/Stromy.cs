@@ -3,7 +3,6 @@ using FarmSimulator.Core.Models.Produkty;
 using FarmSimulator.Core.Models.SpravaFarmy;
 using FarmSimulator.Core.Models.Statky.Interfaces;
 using System.Text.Json.Serialization;
-using System;
 
 namespace FarmSimulator.Core.Models.Statky.Rastliny.Stromy
 {
@@ -11,14 +10,12 @@ namespace FarmSimulator.Core.Models.Statky.Rastliny.Stromy
     {
         [JsonInclude] public TypStromuInfo Info { get; protected set; } = null!;
 
-        // Zmenené na vlastnosti, aby sa ukladali do súboru
         [JsonInclude] public bool Vyrasteny { get; protected set; }
         [JsonInclude] public bool Produkoval { get; protected set; }
 
         public event Action<Strom>? OnStadiumZmenene;
         public event Action<Produkt>? OnOvocieVyprodukovane;
 
-        // JSON konštruktor
         [JsonConstructor]
         protected Strom() { }
 
@@ -84,7 +81,6 @@ namespace FarmSimulator.Core.Models.Statky.Rastliny.Stromy
                 }
 
                 this.Produkoval = true;
-                Console.WriteLine($"[Strom] {Nazov} vyprodukoval ovocie! (Plodov: {PocetPlodov})");
             }
             else if (Produkoval && (Vek % Info.ProdukcnyInterval < (0.33 * Info.ProdukcnyInterval)))
             {
