@@ -6,7 +6,7 @@
     <DockPanel LastChildFill="True" Background="#F0F0F0">
 
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
-            <Button Content="Kúpiť" Width="120" Height="40" Margin="10" Background="LightGreen" FontWeight="Bold"/>
+            <Button Content="Kúpiť" Click="BtnKupit_Click" Width="120" Height="40" Margin="10" Background="LightGreen" FontWeight="Bold"/>
             <Button Content="Predať" Width="120" Height="40" Margin="10" Background="Salmon" FontWeight="Bold"/>
         </StackPanel>
 
@@ -17,11 +17,11 @@
             <TextBlock x:Name="TxtPeniaze" Text="0" Foreground="Orange" FontSize="28" FontWeight="Bold" VerticalAlignment="Center"/>
 
             <Image Source="/Images/obrazky/obrPeniaze.png" Width="30" Height="30" Margin="10,0,10,0"/>
-        </StackPanel>
+            </StackPanel>
 
 
 
-        <TabControl Margin="10">
+        <TabControl x:Name="ObchodTabs" Margin="10">
             <TabItem Header="Dobytok">
                 <DataGrid x:Name="TabulkaDobytok" AutoGenerateColumns="False" IsReadOnly="True" Margin="10">
                     <DataGrid.Columns>

@@ -1,4 +1,4 @@
-﻿using FarmSimulator.Core.Enums.Zelenina;
+﻿using FarmSimulator.Core.Properties.Zelenina;
 using FarmSimulator.Core.Models.Produkty;
 using FarmSimulator.Core.Models.SpravaFarmy;
 using FarmSimulator.Core.Models.Statky.Interfaces;
@@ -8,6 +8,7 @@ namespace FarmSimulator.Core.Models.Statky.Rastliny.Zelenina
 {
     public class Zelenina : Rastlina, IProdukcne
     {
+        public event Action<int> ZmenaStadiaRastu;
         [JsonInclude] public TypZeleninyInfo Info { get; protected set; } = null!;
 
         public event Action<Zelenina>? OnStadiumZmenene;
@@ -37,7 +38,7 @@ namespace FarmSimulator.Core.Models.Statky.Rastliny.Zelenina
             if (this.StadiumRastu != noveStadium)
             {
                 this.StadiumRastu = noveStadium;
-                OnStadiumZmenene?.Invoke(this);
+                ZmenaStadiaRastu?.Invoke(noveStadium -1);
             }
         }
 

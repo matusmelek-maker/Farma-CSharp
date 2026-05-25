@@ -12,6 +12,9 @@
             <TextBlock x:Name="TxtPeniaze" Text="0" Foreground="Orange" FontSize="28" FontWeight="Bold" VerticalAlignment="Center"/>
 
             <Image Source="/Images/obrazky/obrPeniaze.png" Width="30" Height="30" Margin="10,0,10,0"/>
+            <Button x:Name="BtnPosunCas" Content="Posunúť čas (+1)" Click="BtnPosunCas_Click" 
+        Margin="50,12,10,12" Padding="15,0" Background="Orange" FontWeight="Bold" FontSize="14" Cursor="Hand" BorderThickness="0"/>
+
         </StackPanel>
 
         <Grid>

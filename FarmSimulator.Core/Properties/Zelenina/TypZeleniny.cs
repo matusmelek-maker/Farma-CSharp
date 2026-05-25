@@ -1,7 +1,7 @@
 ﻿using FarmSimulator.Core.Properties.Statok;
 using FarmSimulator.Core.Properties.Produkt;
 
-namespace FarmSimulator.Core.Enums.Zelenina
+namespace FarmSimulator.Core.Properties.Zelenina
 {
     public record TypZeleninyInfo(
         string Nazov,

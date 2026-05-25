@@ -8,6 +8,7 @@ namespace FarmSimulator.Core.Models.Statky.Rastliny.Stromy
 {
     public class Strom : Rastlina, IProdukcne
     {
+        public event Action<int> ZmenaStadiaRastu;
         [JsonInclude] public TypStromuInfo Info { get; protected set; } = null!;
 
         [JsonInclude] public bool Vyrasteny { get; protected set; }
@@ -43,7 +44,8 @@ namespace FarmSimulator.Core.Models.Statky.Rastliny.Stromy
             if (this.StadiumRastu != noveStadium)
             {
                 this.StadiumRastu = noveStadium;
-                OnStadiumZmenene?.Invoke(this);
+                ZmenaStadiaRastu?.Invoke(noveStadium - 1);
+
             }
         }
 
