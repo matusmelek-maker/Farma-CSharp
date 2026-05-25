@@ -12,7 +12,7 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata.Dobytok
     public class Dobytok : Zviera, IProdukcne, ISpracovatelnyNaMeso
     {
         // Pripravené pre JSON (pridané JsonInclude a protected set)
-        [JsonInclude] public TypDobytkaInfo Info { get; protected set; }
+        [JsonInclude] public TypDobytkaInfo Info { get; protected set; } = null!;
 
         private List<Produkt> vyprodukovaneProdukty = new();
 

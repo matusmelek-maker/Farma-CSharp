@@ -11,7 +11,7 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata.AtrakcneZviera
     public class AtrakcneZviera : Zviera, IProdukcne
     {
         // Pripravené pre JSON (pridané JsonInclude a protected set)
-        [JsonInclude] public TypAtrakcnehoZvierataInfo TypInfo { get; protected set; }
+        [JsonInclude] public TypAtrakcnehoZvierataInfo TypInfo { get; protected set; } = null!;
 
         // BEZPARAMETRICKÝ KONŠTRUKTOR PRE JSON
         [JsonConstructor]

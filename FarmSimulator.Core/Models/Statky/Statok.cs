@@ -25,7 +25,7 @@ namespace FarmSimulator.Core.Models.Statky
     {
         // Vlastnosti musia mať aspoň 'protected set' a [JsonInclude], 
         // aby ich JsonSerializer vedel pri načítavaní zo súboru vyplniť.
-        [JsonInclude] public string Nazov { get; protected set; }
+        [JsonInclude] public string Nazov { get; protected set; } = null!;
         [JsonInclude] public int KupnaCena { get; protected set; }
         [JsonInclude] public int PredajnaCena { get; protected set; }
         [JsonInclude] public int Vek { get; protected set; }

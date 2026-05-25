@@ -9,7 +9,7 @@ namespace FarmSimulator.Core.Models.Statky.Rastliny.Stromy
 {
     public class Strom : Rastlina, IProdukcne
     {
-        [JsonInclude] public TypStromuInfo Info { get; protected set; }
+        [JsonInclude] public TypStromuInfo Info { get; protected set; } = null!;
 
         // Zmenené na vlastnosti, aby sa ukladali do súboru
         [JsonInclude] public bool Vyrasteny { get; protected set; }

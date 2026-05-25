@@ -36,7 +36,6 @@ namespace FarmSimulator.Core.Models.SpravaFarmy
                 {
                     // Posielame tam priamo celý objekt produktu, ktorý sme práve vytvorili
                     Sklad.Instance.PridajProdukt(produkt);
-                    Console.WriteLine($"[Farmár] Kúpil si produkt, ktorý bol uložený do skladu.");
                 }
                 else
                 {
@@ -76,7 +75,7 @@ namespace FarmSimulator.Core.Models.SpravaFarmy
             return false;
         }
 
-        internal void AktualizujPeniaze(int rozdiel)
+        public void AktualizujPeniaze(int rozdiel)
         {
             Peniaze += rozdiel;
             if (rozdiel >= 0)

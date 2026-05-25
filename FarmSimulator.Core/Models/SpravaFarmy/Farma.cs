@@ -67,13 +67,14 @@ namespace FarmSimulator.Core.Models.SpravaFarmy
             Console.WriteLine("\n--- Aktuálne statky na farme ---");
             foreach (var statok in Statky)
             {
-                Console.WriteLine($"Typ: {statok.Nazov}, Vek: {statok.Vek}, Žije: {statok.Zije}");
+                Console.WriteLine($"Typ: {statok.Nazov}, Vek: {statok.Vek}");
             }
         }
 
         public Statok? NajdiNajstarsiStatok(Statok hladanyTyp)
         {
-            Statok najstarsi = null;
+            // Tu pridaj otáznik, aby C# vedel, že to môže byť na začiatku prázdne
+            Statok? najstarsi = null;
             int maxVek = -1;
 
             foreach (var s in Statky)

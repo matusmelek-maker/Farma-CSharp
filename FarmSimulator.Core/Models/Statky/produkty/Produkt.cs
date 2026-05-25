@@ -7,7 +7,7 @@ namespace FarmSimulator.Core.Models.Produkty
 {
     public class Produkt : Statok
     {
-        [JsonInclude] public TypProduktuInfo Info { get; protected set; }
+        [JsonInclude] public TypProduktuInfo Info { get; protected set; } = null!;
 
         [JsonConstructor]
         protected Produkt() { }

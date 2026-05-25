@@ -1,0 +1,23 @@
+{
+  "PeniazeFarmara": 501,
+  "FarmaStatky": [],
+  "SkladProdukty": [
+    {
+      "Info": {
+        "Nazov": "Hov\u00E4dzina",
+        "KupnaCena": 12,
+        "PredajnaCena": 25,
+        "Kategoria": 1,
+        "TypTovaru": 3,
+        "Zivotnost": 70
+      },
+      "Nazov": "Hov\u00E4dzina",
+      "KupnaCena": 12,
+      "PredajnaCena": 25,
+      "Vek": 4,
+      "Zije": true,
+      "Typ": 3,
+      "Zivotnost": 70
+    }
+  ]
+}

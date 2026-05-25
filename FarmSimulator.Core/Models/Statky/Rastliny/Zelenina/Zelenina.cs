@@ -9,7 +9,7 @@ namespace FarmSimulator.Core.Models.Statky.Rastliny.Zelenina
 {
     public class Zelenina : Rastlina, IProdukcne
     {
-        [JsonInclude] public TypZeleninyInfo Info { get; protected set; }
+        [JsonInclude] public TypZeleninyInfo Info { get; protected set; } = null!;
 
         public event Action<Zelenina>? OnStadiumZmenene;
         public event Action<Produkt>? OnZeleninaVyprodukovana;

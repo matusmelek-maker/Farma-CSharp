@@ -38,6 +38,15 @@ namespace FarmSimulator.Core.Models.SpravaFarmy
             return false;
         }
 
+        public void VypisProdukty()
+        {
+            Console.WriteLine("\n--- Aktuálne produkty v sklade ---");
+            foreach (var produkt in UskladneneProdukty)
+            {
+                Console.WriteLine($"Produkt: {produkt.Nazov}, Vek: {produkt.Vek}");
+            }
+        }
+
         public int ZistiPocet(TypProduktuInfo info)
         {
             // LINQ spočíta, koľko živých produktov daného typu máme
