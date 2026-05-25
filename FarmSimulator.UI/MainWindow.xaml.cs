@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using FarmSimulator.Core.Models.SpravaFarmy;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,6 +20,24 @@ namespace FarmSimulator.UI
         public MainWindow()
         {
             InitializeComponent();
+
+            
+        }
+
+        private void OpenObchod_Click(object sender, RoutedEventArgs e)
+        {
+            // Tu otvoríš nové okno Obchodu
+        }
+
+        private void VykresliPole()
+        {
+            // Predpokladajme, že máš 25 políčok (5x5)
+            for (int i = 0; i < 25; i++)
+            {
+                var btn = new Button { Content = "Prázdne" };
+                btn.Click += (s, e) => MessageBox.Show("Sadenie...");
+                PoleGrid.Children.Add(btn);
+            }
         }
     }
 }

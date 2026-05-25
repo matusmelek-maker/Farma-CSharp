@@ -1,0 +1,23 @@
+{
+  "PeniazeFarmara": 215,
+  "FarmaStatky": [],
+  "SkladProdukty": [
+    {
+      "Info": {
+        "Nazov": "Paradajky",
+        "KupnaCena": 3,
+        "PredajnaCena": 6,
+        "Kategoria": 1,
+        "TypTovaru": 5,
+        "Zivotnost": 50
+      },
+      "Nazov": "Paradajky",
+      "KupnaCena": 3,
+      "PredajnaCena": 6,
+      "Vek": 3,
+      "Zije": true,
+      "Typ": 5,
+      "Zivotnost": 50
+    }
+  ]
+}

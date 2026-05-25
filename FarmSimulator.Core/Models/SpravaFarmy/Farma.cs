@@ -19,7 +19,6 @@ namespace FarmSimulator.Core.Models.SpravaFarmy
         public void PridajStatok(Statok statok)
         {
             Statky.Add(statok);
-            Console.WriteLine($"Pridaný nový statok: {statok.Nazov}");
         }
 
         public void PosunCas(int pocetTikov)

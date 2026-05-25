@@ -9,7 +9,110 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\obrazky\byk.gif" />
+    <None Remove="Images\obrazky\cesta.jpg" />
+    <None Remove="Images\obrazky\citronovnik.png" />
+    <None Remove="Images\obrazky\Farmar.png" />
+    <None Remove="Images\obrazky\kohut.gif" />
+    <None Remove="Images\obrazky\kon.gif" />
+    <None Remove="Images\obrazky\krava.gif" />
+    <None Remove="Images\obrazky\krava_otocena.gif" />
+    <None Remove="Images\obrazky\obrPeniaze.png" />
+    <None Remove="Images\obrazky\ovca.gif" />
+    <None Remove="Images\obrazky\pole.jpg" />
+    <None Remove="Images\obrazky\prasa.gif" />
+    <None Remove="Images\obrazky\shop.png" />
+    <None Remove="Images\obrazky\sklad.png" />
+    <None Remove="Images\obrazky\stromy\citronovnik\1.png" />
+    <None Remove="Images\obrazky\stromy\citronovnik\2.png" />
+    <None Remove="Images\obrazky\stromy\citronovnik\3.png" />
+    <None Remove="Images\obrazky\stromy\citronovnik\4.png" />
+    <None Remove="Images\obrazky\stromy\jahodovnik\1.png" />
+    <None Remove="Images\obrazky\stromy\jahodovnik\2.png" />
+    <None Remove="Images\obrazky\stromy\jahodovnik\3.png" />
+    <None Remove="Images\obrazky\stromy\jahodovnik\4.png" />
+    <None Remove="Images\obrazky\stromy\slivkov_strom\1.png" />
+    <None Remove="Images\obrazky\stromy\slivkov_strom\2.png" />
+    <None Remove="Images\obrazky\stromy\slivkov_strom\3.png" />
+    <None Remove="Images\obrazky\stromy\slivkov_strom\4.png" />
+    <None Remove="Images\obrazky\tovaren.png" />
+    <None Remove="Images\obrazky\zelenina\sadienka_mrkva\1.png" />
+    <None Remove="Images\obrazky\zelenina\sadienka_mrkva\2.png" />
+    <None Remove="Images\obrazky\zelenina\sadienka_mrkva\3.png" />
+    <None Remove="Images\obrazky\zelenina\sadienka_mrkva\4.png" />
+    <None Remove="Images\obrazky\zelenina\semiacka_kukurica\1.png" />
+    <None Remove="Images\obrazky\zelenina\semiacka_kukurica\2.png" />
+    <None Remove="Images\obrazky\zelenina\semiacka_kukurica\3.png" />
+    <None Remove="Images\obrazky\zelenina\semiacka_kukurica\4.png" />
+    <None Remove="Images\obrazky\zelenina\semiacka_obilie\1.png" />
+    <None Remove="Images\obrazky\zelenina\semiacka_obilie\2.png" />
+    <None Remove="Images\obrazky\zelenina\semiacka_obilie\3.png" />
+    <None Remove="Images\obrazky\zelenina\semiacka_obilie\4.png" />
+    <None Remove="Images\obrazky\zelenina\semiacka_paradajka\1.png" />
+    <None Remove="Images\obrazky\zelenina\semiacka_paradajka\2.png" />
+    <None Remove="Images\obrazky\zelenina\semiacka_paradajka\3.png" />
+    <None Remove="Images\obrazky\zelenina\semiacka_paradajka\4.png" />
+    <None Remove="Images\ohrada.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\obrazky\Farmar.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\obrazky\stromy\citronovnik\3.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\obrazky\kohut.gif" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\FarmSimulator.Core\FarmSimulator.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\obrazky\byk.gif">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\obrazky\citronovnik.png" />
+    <Resource Include="Images\obrazky\kon.gif" />
+    <Resource Include="Images\obrazky\krava.gif" />
+    <Resource Include="Images\obrazky\krava_otocena.gif" />
+    <Resource Include="Images\obrazky\obrPeniaze.png" />
+    <Resource Include="Images\obrazky\ovca.gif" />
+    <Resource Include="Images\obrazky\pole.jpg" />
+    <Resource Include="Images\obrazky\prasa.gif" />
+    <Resource Include="Images\obrazky\shop.png" />
+    <Resource Include="Images\obrazky\sklad.png" />
+    <Resource Include="Images\obrazky\stromy\citronovnik\1.png" />
+    <Resource Include="Images\obrazky\stromy\citronovnik\2.png" />
+    <Resource Include="Images\obrazky\stromy\citronovnik\4.png" />
+    <Resource Include="Images\obrazky\stromy\jahodovnik\1.png" />
+    <Resource Include="Images\obrazky\stromy\jahodovnik\2.png" />
+    <Resource Include="Images\obrazky\stromy\jahodovnik\3.png" />
+    <Resource Include="Images\obrazky\stromy\jahodovnik\4.png" />
+    <Resource Include="Images\obrazky\stromy\slivkov_strom\1.png" />
+    <Resource Include="Images\obrazky\stromy\slivkov_strom\2.png" />
+    <Resource Include="Images\obrazky\stromy\slivkov_strom\3.png" />
+    <Resource Include="Images\obrazky\stromy\slivkov_strom\4.png" />
+    <Resource Include="Images\obrazky\tovaren.png" />
+    <Resource Include="Images\obrazky\zelenina\sadienka_mrkva\1.png" />
+    <Resource Include="Images\obrazky\zelenina\sadienka_mrkva\2.png" />
+    <Resource Include="Images\obrazky\zelenina\sadienka_mrkva\3.png" />
+    <Resource Include="Images\obrazky\zelenina\sadienka_mrkva\4.png" />
+    <Resource Include="Images\obrazky\zelenina\semiacka_kukurica\1.png" />
+    <Resource Include="Images\obrazky\zelenina\semiacka_kukurica\2.png" />
+    <Resource Include="Images\obrazky\zelenina\semiacka_kukurica\3.png" />
+    <Resource Include="Images\obrazky\zelenina\semiacka_kukurica\4.png" />
+    <Resource Include="Images\obrazky\zelenina\semiacka_obilie\1.png" />
+    <Resource Include="Images\obrazky\zelenina\semiacka_obilie\2.png" />
+    <Resource Include="Images\obrazky\zelenina\semiacka_obilie\3.png" />
+    <Resource Include="Images\obrazky\zelenina\semiacka_obilie\4.png" />
+    <Resource Include="Images\obrazky\zelenina\semiacka_paradajka\1.png" />
+    <Resource Include="Images\obrazky\zelenina\semiacka_paradajka\2.png" />
+    <Resource Include="Images\obrazky\zelenina\semiacka_paradajka\3.png" />
+    <Resource Include="Images\obrazky\zelenina\semiacka_paradajka\4.png" />
+    <Resource Include="Images\ohrada.jpg" />
   </ItemGroup>
 
 </Project>

@@ -1,12 +1,27 @@
 ﻿<Window x:Class="FarmSimulator.UI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:FarmSimulator.UI"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Farma Simulátor" Height="600" Width="800">
+    <DockPanel Margin="-10,-80,10,79">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Background="LightGray" Height="60">
+            <Image Source="pack://application:,,,/Resources/Farmar.png" Margin="10"/>
+            <TextBlock Text="Farmár Melo" VerticalAlignment="Center" Margin="5"/>
+            <Image Source="pack://application:,,,/Resources/obrPeniaze.png" Margin="20,10,5,10"/>
+            <TextBlock x:Name="TxtPeniaze" Text="1000" VerticalAlignment="Center" FontSize="20" FontWeight="Bold"/>
+        </StackPanel>
 
-    </Grid>
+        <StackPanel DockPanel.Dock="Left" Width="150" Background="Beige">
+            <TextBlock Text="Ohrádky" HorizontalAlignment="Center" Margin="10"/>
+        </StackPanel>
+
+        <StackPanel DockPanel.Dock="Right" Width="150" Background="Beige">
+            <Button Content="Obchod" Margin="10" Click="BtnObchod_Click"/>
+            <Button Content="Sklad" Margin="10" Click="BtnSklad_Click"/>
+        </StackPanel>
+
+        <Grid Background="LightGreen">
+            <UniformGrid x:Name="PoleGrid" Columns="5" Rows="5" Margin="20">
+            </UniformGrid>
+        </Grid>
+    </DockPanel>
 </Window>
