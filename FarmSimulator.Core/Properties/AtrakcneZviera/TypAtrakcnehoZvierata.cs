@@ -4,7 +4,7 @@ using FarmSimulator.Core.Properties.Zvierata;
 namespace FarmSimulator.Core.Properties.AtrakcneZviera
 {
     public record TypAtrakcnehoZvierataInfo(
-        string NazovObrazka,
+        string Nazov,
         int KupnaCena,
         int PredajnaCena,
         int KonstantaHlad,

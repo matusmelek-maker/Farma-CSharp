@@ -20,7 +20,7 @@ namespace FarmSimulator.Core.Models.Statky.Rastliny.Stromy
         protected Strom() { }
 
         public Strom(TypStromuInfo info)
-            : base(info.NazovObrazka, info.KupnaCena, info.PredajnaCena, true, info.TypObchodnehoTovaru, info.Zivotnost)
+            : base(info.Nazov, info.KupnaCena, info.PredajnaCena, true, info.TypObchodnehoTovaru, info.Zivotnost)
         {
             this.Info = info;
             this.Vyrasteny = false;

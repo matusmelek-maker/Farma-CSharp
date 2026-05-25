@@ -14,7 +14,7 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata.AtrakcneZviera
         protected AtrakcneZviera() { }
 
         public AtrakcneZviera(TypAtrakcnehoZvierataInfo info)
-            : base(info.NazovObrazka, info.KupnaCena, info.PredajnaCena, info.TypTovaru,
+            : base(info.Nazov, info.KupnaCena, info.PredajnaCena, info.TypTovaru,
                    info.KonstantaHlad, info.Pohlavie, info.KonstantaReprodukcie,
                    info.Zivotnost, info.IndexOhradky, info.Druh)
         {

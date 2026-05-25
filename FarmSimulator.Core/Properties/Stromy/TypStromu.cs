@@ -4,7 +4,7 @@ using FarmSimulator.Core.Properties.Produkt;
 namespace FarmSimulator.Core.Enums.Stromy
 {   
     public record TypStromuInfo(
-        string NazovObrazka,
+        string Nazov,
         int KupnaCena,
         int PredajnaCena,
         TypProduktuInfo Produkt,

@@ -9,9 +9,11 @@ namespace FarmSimulator.Core.Models.SpravaFarmy
         public static Farmar Instance => _instance ??= new Farmar();
         public int Peniaze { get; private set; }
 
+        public event Action<int> PeniazeSaZmenili;
         public Farmar(int pociatocnePeniaze = 9999)
         {
             Peniaze = pociatocnePeniaze;
+
         }
         public void NastavPeniaze(int peniazeFarmara)
         {
@@ -66,6 +68,7 @@ namespace FarmSimulator.Core.Models.SpravaFarmy
         public void AktualizujPeniaze(int rozdiel)
         {
             Peniaze += rozdiel;
+            PeniazeSaZmenili?.Invoke(Peniaze);
             if (rozdiel >= 0)
 
                 Console.WriteLine($"Farmár získal {rozdiel}$. Celkové peníze: {Peniaze}");

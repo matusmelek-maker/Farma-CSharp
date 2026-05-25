@@ -1,0 +1,77 @@
+﻿<Window x:Class="FarmSimulator.UI.ObchodWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Obchod" Height="500" Width="700" WindowStartupLocation="CenterOwner">
+
+    <DockPanel LastChildFill="True" Background="#F0F0F0">
+
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+            <Button Content="Kúpiť" Width="120" Height="40" Margin="10" Background="LightGreen" FontWeight="Bold"/>
+            <Button Content="Predať" Width="120" Height="40" Margin="10" Background="Salmon" FontWeight="Bold"/>
+        </StackPanel>
+
+        <StackPanel DockPanel.Dock="Top" Height="60" Background="#7C5437" Orientation="Horizontal">
+
+            <Image Source="/Images/obrazky/Farmar.png" Width="40" Height="40" Margin="10,0,10,0"/>
+
+            <TextBlock x:Name="TxtPeniaze" Text="0" Foreground="Orange" FontSize="28" FontWeight="Bold" VerticalAlignment="Center"/>
+
+            <Image Source="/Images/obrazky/obrPeniaze.png" Width="30" Height="30" Margin="10,0,10,0"/>
+        </StackPanel>
+
+
+
+        <TabControl Margin="10">
+            <TabItem Header="Dobytok">
+                <DataGrid x:Name="TabulkaDobytok" AutoGenerateColumns="False" IsReadOnly="True" Margin="10">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Názov / Typ" Binding="{Binding Nazov}" Width="*"/>
+                        <DataGridTextColumn Header="Kúpna cena ($)" Binding="{Binding KupnaCena}" Width="*"/>
+                        <DataGridTextColumn Header="Predajná cena ($)" Binding="{Binding PredajnaCena}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <TabItem Header="Atrakčné Zvieratá">
+                <DataGrid x:Name="TabulkaAtrakcne" AutoGenerateColumns="False" IsReadOnly="True" Margin="10">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Názov / Typ" Binding="{Binding Nazov}" Width="*"/>
+                        <DataGridTextColumn Header="Kúpna cena ($)" Binding="{Binding KupnaCena}" Width="*"/>
+                        <DataGridTextColumn Header="Predajná cena ($)" Binding="{Binding PredajnaCena}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <TabItem Header="Zelenina">
+                <DataGrid x:Name="TabulkaZelenina" AutoGenerateColumns="False" IsReadOnly="True" Margin="10">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Názov / Typ" Binding="{Binding Nazov}" Width="*"/>
+                        <DataGridTextColumn Header="Kúpna cena ($)" Binding="{Binding KupnaCena}" Width="*"/>
+                        <DataGridTextColumn Header="Predajná cena ($)" Binding="{Binding PredajnaCena}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <TabItem Header="Stromy">
+                <DataGrid x:Name="TabulkaStromy" AutoGenerateColumns="False" IsReadOnly="True" Margin="10">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Názov / Typ" Binding="{Binding Nazov}" Width="*"/>
+                        <DataGridTextColumn Header="Kúpna cena ($)" Binding="{Binding KupnaCena}" Width="*"/>
+                        <DataGridTextColumn Header="Predajná cena ($)" Binding="{Binding PredajnaCena}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <TabItem Header="Produkty">
+                <DataGrid x:Name="TabulkaProdukty" AutoGenerateColumns="False" IsReadOnly="True" Margin="10">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Názov / Typ" Binding="{Binding Nazov}" Width="*"/>
+                        <DataGridTextColumn Header="Kúpna cena ($)" Binding="{Binding KupnaCena}" Width="*"/>
+                        <DataGridTextColumn Header="Predajná cena ($)" Binding="{Binding PredajnaCena}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+        </TabControl>
+
+    </DockPanel>
+</Window>

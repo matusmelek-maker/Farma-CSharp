@@ -17,7 +17,7 @@ namespace FarmSimulator.Core.Models.Statky.Rastliny.Zelenina
         protected Zelenina() { }
 
         public Zelenina(TypZeleninyInfo info)
-            : base(info.NazovObrazka, info.KupnaCena, info.PredajnaCena, true, info.TypTovaru, info.Zivotnost)
+            : base(info.Nazov, info.KupnaCena, info.PredajnaCena, true, info.TypTovaru, info.Zivotnost)
         {
             this.Info = info;
         }
