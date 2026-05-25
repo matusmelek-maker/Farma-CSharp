@@ -13,7 +13,10 @@
 
             <Image Source="/Images/obrazky/obrPeniaze.png" Width="30" Height="30" Margin="10,0,10,0"/>
             <Button x:Name="BtnPosunCas" Content="Posunúť čas (+1)" Click="BtnPosunCas_Click" 
-        Margin="50,12,10,12" Padding="15,0" Background="Orange" FontWeight="Bold" FontSize="14" Cursor="Hand" BorderThickness="0"/>
+                    Margin="50,12,10,12" Padding="15,0" Background="Orange" FontWeight="Bold" FontSize="14" Cursor="Hand" BorderThickness="0"/>
+
+            <Button x:Name="BtnVypisBackendu" Content="Čo je na farme?" Click="BtnVypisBackendu_Click" 
+                    Margin="10,12,10,12" Padding="15,0" Background="LightBlue" FontWeight="Bold" FontSize="14" Cursor="Hand" BorderThickness="0"/>
 
         </StackPanel>
 

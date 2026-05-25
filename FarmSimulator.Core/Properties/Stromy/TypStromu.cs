@@ -1,7 +1,7 @@
 ﻿using FarmSimulator.Core.Properties.Statok;
 using FarmSimulator.Core.Properties.Produkt;
 
-namespace FarmSimulator.Core.Enums.Stromy
+namespace FarmSimulator.Core.Properties.Stromy
 {   
     public record TypStromuInfo(
         string Nazov,

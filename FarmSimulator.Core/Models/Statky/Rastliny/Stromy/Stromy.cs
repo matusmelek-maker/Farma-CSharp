@@ -1,4 +1,4 @@
-﻿using FarmSimulator.Core.Enums.Stromy;
+﻿using FarmSimulator.Core.Properties.Stromy;
 using FarmSimulator.Core.Models.Produkty;
 using FarmSimulator.Core.Models.SpravaFarmy;
 using FarmSimulator.Core.Models.Statky.Interfaces;
@@ -44,8 +44,8 @@ namespace FarmSimulator.Core.Models.Statky.Rastliny.Stromy
             if (this.StadiumRastu != noveStadium)
             {
                 this.StadiumRastu = noveStadium;
-                ZmenaStadiaRastu?.Invoke(noveStadium - 1);
 
+                ZmenaStadiaRastu?.Invoke(noveStadium);
             }
         }
 

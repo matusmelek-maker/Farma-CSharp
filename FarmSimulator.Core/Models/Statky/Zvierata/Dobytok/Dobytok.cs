@@ -1,15 +1,24 @@
-﻿using FarmSimulator.Core.Properties.Dobytok;
-using FarmSimulator.Core.Properties.Produkt;
-using FarmSimulator.Core.Models.Produkty;
+﻿using FarmSimulator.Core.Models.Produkty;
 using FarmSimulator.Core.Models.SpravaFarmy;
 using FarmSimulator.Core.Models.Statky.Interfaces;
+using FarmSimulator.Core.Properties.Dobytok;
+using FarmSimulator.Core.Properties.Produkt;
 using System.Text.Json.Serialization;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace FarmSimulator.Core.Models.Statky.Zvierata.Dobytok
 {
-    public class Dobytok : Zviera, IProdukcne, ISpracovatelnyNaMeso
+    public class Dobytok : Zviera, IProdukcne, ISpracovatelnyNaMeso, IPohyblive
     {
+        public event Action<int, int> OnPohyb;
         [JsonInclude] public TypDobytkaInfo Info { get; protected set; } = null!;
+        public int Riadok { get; set; }
+        public int Stlpec { get; set; }
+        public int MinRiadok { get; set; }
+        public int MaxRiadok { get; set; }
+        public int MinStlpec { get; set; }
+        public int MaxStlpec { get; set; }
+        
 
         private List<Produkt> vyprodukovaneProdukty = new();
 
@@ -36,6 +45,7 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata.Dobytok
             base.VykonajAkcie();
             this.Produkcia();
             this.SpracujNaMeso();
+            this.PohniSa(); 
         }
 
         public void Produkcia()
@@ -82,6 +92,27 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata.Dobytok
                     }
                 }
             }
+        }
+
+        public void PohniSa()
+        {
+            Random rng = new Random();
+
+            // Skúsime urobiť krok o -1, 0 alebo +1
+            int novyRiadok = Riadok + rng.Next(-1, 2);
+            int novyStlpec = Stlpec + rng.Next(-1, 2);
+
+            // Kontrola hraníc (Clamp)
+            if (novyRiadok >= MinRiadok && novyRiadok <= MaxRiadok &&
+                novyStlpec >= MinStlpec && novyStlpec <= MaxStlpec)
+            {
+                Riadok = novyRiadok;
+                Stlpec = novyStlpec;
+
+                // Event na posun v UI
+                OnPohyb?.Invoke(Riadok, Stlpec);
+            }
+
         }
     }
 }

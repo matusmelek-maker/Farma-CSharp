@@ -1,0 +1,24 @@
+﻿<Window x:Class="FarmSimulator.UI.SkladWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Sklad farmy" Height="400" Width="400" Background="#F5DEB3" WindowStartupLocation="CenterOwner">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Background="#8B4513" Padding="15">
+            <TextBlock Text="Môj Sklad" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+        </Border>
+
+        <DataGrid x:Name="TabulkaSklad" Grid.Row="1" Margin="15" AutoGenerateColumns="False" CanUserAddRows="False" 
+                  Background="White" RowHeight="35" FontSize="16" IsReadOnly="True" HeadersVisibility="Column"
+                  BorderBrush="#8B4513" BorderThickness="2" AlternatingRowBackground="#FFF8DC">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Názov produktu" Binding="{Binding Nazov}" Width="*"/>
+                <DataGridTextColumn Header="Počet kusov" Binding="{Binding PocetKusov}" Width="120"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

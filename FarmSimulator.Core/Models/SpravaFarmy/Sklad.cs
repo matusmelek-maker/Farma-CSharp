@@ -1,5 +1,8 @@
 ﻿using FarmSimulator.Core.Models.Produkty;
 using FarmSimulator.Core.Properties.Produkt;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FarmSimulator.Core.Models.SpravaFarmy
 {
@@ -10,6 +13,9 @@ namespace FarmSimulator.Core.Models.SpravaFarmy
 
         public List<Produkt> UskladneneProdukty { get; private set; }
 
+        // TOTO SME PRIDALI: Event, ktorý upozorní okno skladu, že sa zmenili počty
+        public event Action? SkladSaZmenil;
+
         private Sklad()
         {
             UskladneneProdukty = new List<Produkt>();
@@ -18,6 +24,7 @@ namespace FarmSimulator.Core.Models.SpravaFarmy
         public void PridajProdukt(Produkt produkt)
         {
             UskladneneProdukty.Add(produkt);
+            SkladSaZmenil?.Invoke(); // Dáme vedieť UI
         }
 
         public bool OdoberProdukt(TypProduktuInfo info)
@@ -27,18 +34,10 @@ namespace FarmSimulator.Core.Models.SpravaFarmy
             if (produktNaOdobratie != null)
             {
                 UskladneneProdukty.Remove(produktNaOdobratie);
+                SkladSaZmenil?.Invoke(); // Dáme vedieť UI
                 return true;
             }
             return false;
-        }
-
-        public void VypisProdukty()
-        {
-            Console.WriteLine("\n--- Aktuálne produkty v sklade ---");
-            foreach (var produkt in UskladneneProdukty)
-            {
-                Console.WriteLine($"Produkt: {produkt.Nazov}, Vek: {produkt.Vek}");
-            }
         }
 
         public int ZistiPocet(TypProduktuInfo info)
@@ -55,13 +54,18 @@ namespace FarmSimulator.Core.Models.SpravaFarmy
                 if (p.Zije)
                 {
                     p.Tik();
-
                     p.VykonajAkcie();
                 }
             }
 
-            int povodnyPocet = UskladneneProdukty.Count;
-            UskladneneProdukty.RemoveAll(p => !p.Zije);
+            // Vymažeme všetky pokazené produkty
+            int pocetZmazanych = UskladneneProdukty.RemoveAll(p => !p.Zije);
+
+            // Ak sa niečo pokazilo a zmizlo, aktualizujeme UI
+            if (pocetZmazanych > 0)
+            {
+                SkladSaZmenil?.Invoke();
+            }
         }
     }
 }

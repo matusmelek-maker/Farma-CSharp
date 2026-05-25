@@ -10,6 +10,7 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata
 {
     public abstract class Zviera : Statok, IPrijimajuciZiviny
     {
+        public event Action<Zviera> OnNarodiloSaZviera;
         [JsonInclude] public int KonstantaHlad { get; protected set; }
         [JsonInclude] public bool Pohlavie { get; protected set; }
         [JsonInclude] public int KonstantaReprodukcie { get; protected set; }
@@ -24,10 +25,6 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata
         private List<Produkt> zeleninaZjedena = new();
         private List<Produkt> pridaneProdukty = new();
 
-        public double PoziciaX { get; set; } = 50;
-        public double PoziciaY { get; set; } = 50;
-        private double smerX;
-        private double smerY;
         private Random random = new Random();
 
         [JsonConstructor]
@@ -47,37 +44,10 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata
             this.Najedene = false;
             this.UrovenHladu = 0;
 
-            InicializujSmerPohybu();
         }
 
-        private void InicializujSmerPohybu()
-        {
-            double uhol;
-            do
-            {
-                uhol = random.NextDouble() * 2 * Math.PI;
-                smerX = Math.Cos(uhol);
-                smerY = Math.Sin(uhol);
-            } while (Math.Abs(smerX) < 0.3 || Math.Abs(smerY) < 0.3);
-        }
-
-        public void AktualizujPohyb(int sirkaOhrady, int vyskaOhrady)
-        {
-            int rychlost = 1;
-            PoziciaX += smerX * rychlost;
-            PoziciaY += smerY * rychlost;
-
-            if (PoziciaX < 0 || PoziciaX > sirkaOhrady - 50) { smerX *= -1; }
-            if (PoziciaY < 0 || PoziciaY > vyskaOhrady - 50) { smerY *= -1; }
-
-            if (random.NextDouble() < 0.01)
-            {
-                double deltaUhol = (random.NextDouble() - 0.5) * Math.PI / 4;
-                double aktualnyUhol = Math.Atan2(smerY, smerX);
-                smerX = Math.Cos(aktualnyUhol + deltaUhol);
-                smerY = Math.Sin(aktualnyUhol + deltaUhol);
-            }
-        }
+         
+        
 
         public override void VykonajAkcie()
         {
@@ -107,6 +77,7 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata
                     if (noveZviera != null)
                     {
                         Farma.Instance.PridajStatok(noveZviera);
+                        OnNarodiloSaZviera?.Invoke(noveZviera);
                         this.PripravenyNaReprodukciu = false;
                         samica.PripravenyNaReprodukciu = false;
                         this.pridane.Add(noveZviera);

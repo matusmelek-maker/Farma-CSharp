@@ -7,7 +7,7 @@
 
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
             <Button Content="Kúpiť" Click="BtnKupit_Click" Width="120" Height="40" Margin="10" Background="LightGreen" FontWeight="Bold"/>
-            <Button Content="Predať" Width="120" Height="40" Margin="10" Background="Salmon" FontWeight="Bold"/>
+            <Button Content="Predať" Click="BtnPredat_Click" Width="120" Height="40" Margin="10" Background="Salmon" FontWeight="Bold"/>
         </StackPanel>
 
         <StackPanel DockPanel.Dock="Top" Height="60" Background="#7C5437" Orientation="Horizontal">

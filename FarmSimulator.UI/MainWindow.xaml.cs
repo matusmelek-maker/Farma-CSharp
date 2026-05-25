@@ -1,4 +1,7 @@
-﻿using System;
+﻿using FarmSimulator.Core.Models.Statky.Zvierata;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -10,13 +13,16 @@ namespace FarmSimulator.UI
     {
         private Image[] vizualnePolia = new Image[36];
         private bool[] jePoleObsadene = new bool[36];
+
+        private List<Border> ohradkyUI = new List<Border>();
+        private Dictionary<FarmSimulator.Core.Models.Statky.Zvierata.Dobytok.Dobytok, Image> zvierataObrazky = new Dictionary<FarmSimulator.Core.Models.Statky.Zvierata.Dobytok.Dobytok, Image>();
+
         public MainWindow()
         {
             InitializeComponent();
 
             TxtPeniaze.Text = FarmSimulator.Core.Models.SpravaFarmy.Farmar.Instance.Peniaze.ToString();
 
-            // Prihlásenie na odber zmien peňazí
             FarmSimulator.Core.Models.SpravaFarmy.Farmar.Instance.PeniazeSaZmenili += (novePeniaze) =>
             {
                 Dispatcher.Invoke(() => {
@@ -24,7 +30,14 @@ namespace FarmSimulator.UI
                 });
             };
 
-            // Vykreslenie komponentov farmy
+            FarmSimulator.Core.Models.Ludia.SpravcaLudi.Instance.OnNakupDokonceny += (zarobok, spokojny) =>
+            {
+                Dispatcher.Invoke(() => {
+                    string listokText = FarmSimulator.Core.Models.Ludia.SpravcaLudi.Instance.Clovek.ZiskajNakupnyListokText();
+                    MessageBox.Show($"{listokText}\n\nZarobok: {zarobok}€\nSpokojný: {spokojny}");
+                });
+            };
+
             VykresliOhradky();
             VykresliPolia();
         }
@@ -37,16 +50,85 @@ namespace FarmSimulator.UI
 
             for (int i = 0; i < 6; i++)
             {
+                Grid kontajnerZvierat = new Grid();
+
+                for (int r = 0; r < 3; r++) kontajnerZvierat.RowDefinitions.Add(new RowDefinition());
+                for (int c = 0; c < 4; c++) kontajnerZvierat.ColumnDefinitions.Add(new ColumnDefinition());
+
                 Border ohradaPanel = new Border
                 {
                     Background = ohradaPozadie,
                     Width = 160,
                     Height = 75,
                     Margin = new Thickness(5),
-                    CornerRadius = new CornerRadius(10)
+                    CornerRadius = new CornerRadius(10),
+                    Child = kontajnerZvierat
                 };
+
+                ohradkyUI.Add(ohradaPanel);
                 OhradyGrid.Children.Add(ohradaPanel);
             }
+        }
+
+        public void PridajZvieraDoOhrady(FarmSimulator.Core.Models.Statky.Zvierata.Dobytok.Dobytok zviera, int indexOhradky)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (indexOhradky >= 0 && indexOhradky < ohradkyUI.Count)
+                {
+                    var kontajner = (Grid)ohradkyUI[indexOhradky].Child;
+
+                    Image img = new Image();
+                    img.Source = new BitmapImage(new Uri($"pack://application:,,,/Images/obrazky/{zviera.Nazov}.gif", UriKind.Absolute));
+
+                    img.Width = 30;
+                    img.Height = 30;
+                    img.Stretch = Stretch.Uniform;
+                    img.Margin = new Thickness(2);
+
+                    Grid.SetRow(img, zviera.Riadok);
+                    Grid.SetColumn(img, zviera.Stlpec);
+
+                    zvierataObrazky[zviera] = img;
+                    kontajner.Children.Add(img);
+                }
+            });
+
+            // Registrácia eventu
+            zviera.OnNarodiloSaZviera -= Zviera_OnNarodiloSaZviera;
+            zviera.OnNarodiloSaZviera += Zviera_OnNarodiloSaZviera;
+
+            // Dôležité: Tu musíš tiež zaregistrovať pohyb pre nové zvieratko
+            zviera.OnPohyb += (novyRiadok, novyStlpec) =>
+            {
+                Dispatcher.Invoke(() => {
+                    var img = NajdiObrazokZvierata(zviera);
+                    if (img != null)
+                    {
+                        Grid.SetRow(img, novyRiadok);
+                        Grid.SetColumn(img, novyStlpec);
+                    }
+                });
+            };
+        } // <--- TOTO je koniec metódy PridajZvieraDoOhrady
+
+        // Samostatná metóda pre obsluhu narodenia
+        private void Zviera_OnNarodiloSaZviera(FarmSimulator.Core.Models.Statky.Zvierata.Zviera potomok)
+        {
+            var potomokDobytok = potomok as FarmSimulator.Core.Models.Statky.Zvierata.Dobytok.Dobytok;
+            if (potomokDobytok != null)
+            {
+                this.PridajZvieraDoOhrady(potomokDobytok, potomokDobytok.IndexOhradky);
+            }
+        }
+
+        public Image NajdiObrazokZvierata(FarmSimulator.Core.Models.Statky.Zvierata.Dobytok.Dobytok zviera)
+        {
+            if (zvierataObrazky.ContainsKey(zviera))
+            {
+                return zvierataObrazky[zviera];
+            }
+            return null;
         }
 
         private void VykresliPolia()
@@ -57,21 +139,18 @@ namespace FarmSimulator.UI
 
             for (int i = 0; i < 36; i++)
             {
-                // 1. Vytvoríme mriežku, ktorá drží vrstvy na sebe
                 Grid vrstvyBunky = new Grid();
-                vrstvyBunky.Background = polePozadie; // Toto pozadie zeme sa už NIKDY nezmení
+                vrstvyBunky.Background = polePozadie;
 
-                // 2. Vytvoríme obrázok rastliny, ktorý pôjde NA pozadie
                 Image obrazokRastliny = new Image();
                 obrazokRastliny.Stretch = Stretch.Uniform;
-                obrazokRastliny.Source = null; // Zatiaľ je prázdny (nič tu nerastie)
+                obrazokRastliny.Source = null;
 
                 vrstvyBunky.Children.Add(obrazokRastliny);
 
-                // 3. Zabalíme to do starého známeho ohraničenia (Border)
                 Border polePanel = new Border
                 {
-                    Child = vrstvyBunky, // Do vnútra vložíme našu dvojvrstvovú mriežku
+                    Child = vrstvyBunky,
                     Width = 35,
                     Height = 35,
                     Margin = new Thickness(2),
@@ -81,81 +160,122 @@ namespace FarmSimulator.UI
                     Tag = i
                 };
 
-                // 4. Uložíme si IBA TÚ VRCHNÚ VRSTVU (obrázok rastliny), aby sme ho neskôr vedeli meniť
                 vizualnePolia[i] = obrazokRastliny;
-
                 PoliaGrid.Children.Add(polePanel);
             }
         }
 
-        // NOVÁ METÓDA: Nájde prvé prázdne pole
         public int NajdiVolnePole()
         {
             for (int i = 0; i < 36; i++)
             {
-                // Pýtame sa nášho nového poľa. Výkričník znamená "Ak NIE JE obsadené"
                 if (!jePoleObsadene[i])
                 {
-                    return i; // Vráti prvý voľný index
+                    return i;
                 }
             }
             return -1;
         }
 
-        // OPRAVENÁ METÓDA: Mení už iba vrchnú vrstvu
+        public void VymazObrazokPolicka(int indexPolicka)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (indexPolicka >= 0 && indexPolicka < vizualnePolia.Length)
+                {
+                    vizualnePolia[indexPolicka].Source = null;
+                    jePoleObsadene[indexPolicka] = false;
+                }
+            });
+        }
+
+        public void OdstranZvieratko(FarmSimulator.Core.Models.Statky.Zvierata.Dobytok.Dobytok zviera)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                var img = NajdiObrazokZvierata(zviera);
+                if (img != null)
+                {
+                    var ohradaGrid = img.Parent as Grid;
+                    if (ohradaGrid != null)
+                    {
+                        ohradaGrid.Children.Remove(img);
+                    }
+                    zvierataObrazky.Remove(zviera);
+                }
+            });
+        }
+
         public void ZmenObrazokPolicka(int indexPolicka, string kategoria, string nazovRastliny, int stadiumRastu)
         {
             Dispatcher.Invoke(() =>
             {
                 if (indexPolicka >= 0 && indexPolicka < vizualnePolia.Length)
                 {
-                    string cestaKObrazku = $"pack://application:,,,/Images/{kategoria}/{nazovRastliny}/{stadiumRastu}.png";
+                    string cestaKObrazku = $"pack://application:,,,/Images/obrazky/{kategoria}/{nazovRastliny}/{stadiumRastu}.png";
 
                     try
                     {
                         vizualnePolia[indexPolicka].Source = new BitmapImage(new Uri(cestaKObrazku, UriKind.Absolute));
-
-                        // TOTO PRIDAJ: Políčko je odteraz oficiálne obsadené!
                         jePoleObsadene[indexPolicka] = true;
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Nepodarilo sa načítať obrázok: {cestaKObrazku}");
+                        MessageBox.Show(
+                            $"WPF nedokáže načítať tento obrázok:\n\n{cestaKObrazku}",
+                            "Chýbajúci obrázok!",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error);
                     }
                 }
             });
         }
 
-        private void BtnPosunCas_Click(object sender, RoutedEventArgs e)
+        private void BtnVypisBackendu_Click(object sender, RoutedEventArgs e)
         {
-            // Tu zavoláme hlavnú metódu z tvojho backendu (Core), 
-            // ktorá prejde cyklom cez všetky zasadené rastliny a zvieratá a posunie im vek/štádium.
+            var statkyNaFarme = FarmSimulator.Core.Models.SpravaFarmy.Farma.Instance.Statky;
 
-            // ZATIAĽ ZAKOMENTOVANÉ, kým to neprepojíme:
-            // FarmSimulator.Core.Models.SpravaFarmy.Farma.Instance.PosunCas();
+            if (statkyNaFarme.Count == 0)
+            {
+                MessageBox.Show("Farma je úplne prázdna. Zatiaľ si nič nekúpil.", "Test Backend pamäte", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
 
-            // Dočasný výpis pre teba, aby si videl, že tlačidlo funguje
-            MessageBox.Show("Čas na farme sa posunul o 1!", "Tik-Tak", MessageBoxButton.OK, MessageBoxImage.Information);
+            string vypis = $"Farme má celkovo {statkyNaFarme.Count} vecí:\n\n";
+
+            foreach (var statok in statkyNaFarme)
+            {
+                vypis += $"➡️ {statok.Nazov} (Vek: {statok.Vek}, Štádium rastu/Žije: {statok.Zije})\n";
+            }
+
+            MessageBox.Show(vypis, "Test Backend pamäte", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        // Akcia po kliknutí na Obchod
+        private void BtnPosunCas_Click(object sender, RoutedEventArgs e)
+        {
+            FarmSimulator.Core.Models.SpravaFarmy.Farma.Instance.PosunCas(1);
+        }
+
         private void BtnObchod_Click(object sender, RoutedEventArgs e)
         {
-            // Vytvoríme inštanciu okna obchodu
             ObchodWindow obchod = new ObchodWindow();
-
-            // Nastavíme, že toto hlavné okno je "vlastníkom" obchodu
             obchod.Owner = this;
-
-            // Otvoríme ho ako dialóg (používateľ nemôže klikať na farmu, kým nezavrie obchod)
             obchod.ShowDialog();
         }
 
-        // Akcia po kliknutí na Sklad
         private void BtnSklad_Click(object sender, RoutedEventArgs e)
         {
-            // Tu neskôr otvoríš okno skladu
-            MessageBox.Show("Otváram Sklad!");
+            SkladWindow sklad = new SkladWindow();
+            sklad.Owner = this;
+            sklad.ShowDialog(); 
         }
+
+        public List<int> DajIndexyOhrady(int indexOhradky)
+        {
+            int start = indexOhradky * 6;
+            return Enumerable.Range(start, 6).ToList();
+        }
+
+        
     }
 }

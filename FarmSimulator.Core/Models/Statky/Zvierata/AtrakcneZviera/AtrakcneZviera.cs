@@ -6,9 +6,16 @@ using System.Text.Json.Serialization;
 
 namespace FarmSimulator.Core.Models.Statky.Zvierata.AtrakcneZviera
 {
-    public class AtrakcneZviera : Zviera, IProdukcne
+    public class AtrakcneZviera : Zviera, IProdukcne, IPohyblive
     {
         [JsonInclude] public TypAtrakcnehoZvierataInfo TypInfo { get; protected set; } = null!;
+        public int AktualnePoleIndex { get; set; }
+        public int Riadok { get; set; }
+        public int Stlpec { get; set; }
+        public int MinRiadok { get; set; }
+        public int MaxRiadok { get; set; }
+        public int MinStlpec { get; set; }
+        public int MaxStlpec { get; set; }
 
         [JsonConstructor]
         protected AtrakcneZviera() { }
@@ -25,6 +32,7 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata.AtrakcneZviera
         {
             base.VykonajAkcie();
             this.Produkcia();
+            this.PohniSa();
         }
 
         public void Produkcia()
@@ -41,6 +49,11 @@ namespace FarmSimulator.Core.Models.Statky.Zvierata.AtrakcneZviera
         protected override Zviera VytvorKlon()
         {
             return new AtrakcneZviera(this.TypInfo);
+        }
+
+        public void PohniSa()
+        {
+            throw new NotImplementedException();
         }
     }
 }

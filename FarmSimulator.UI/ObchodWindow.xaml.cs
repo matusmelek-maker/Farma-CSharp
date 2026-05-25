@@ -1,5 +1,5 @@
-﻿using FarmSimulator.Core.Enums.Stromy;
-using FarmSimulator.Core.Enums.Zelenina;
+﻿using FarmSimulator.Core.Properties.Stromy;
+using FarmSimulator.Core.Properties.Zelenina;
 using FarmSimulator.Core.Properties.AtrakcneZviera;
 using FarmSimulator.Core.Properties.Dobytok;
 using FarmSimulator.Core.Properties.Produkt;
@@ -7,8 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-// Dôležité: Nezabudni sem pridať "using" pre tvoje enumy z Core projektu!
-// napr.: using FarmSimulator.Core.Modely; 
 
 namespace FarmSimulator.UI
 {
@@ -18,57 +16,227 @@ namespace FarmSimulator.UI
         {
             InitializeComponent();
 
-            // Načítanie peňazí (nechávame rovnaké)
             TxtPeniaze.Text = FarmSimulator.Core.Models.SpravaFarmy.Farmar.Instance.Peniaze.ToString();
             FarmSimulator.Core.Models.SpravaFarmy.Farmar.Instance.PeniazeSaZmenili += (novePeniaze) =>
             {
                 Dispatcher.Invoke(() => { TxtPeniaze.Text = novePeniaze.ToString(); });
             };
 
-            // Zavoláme naplnenie pre všetky sekcie
             NacitajVsetkyKategorie();
         }
-        private void BtnKupit_Click(object sender, RoutedEventArgs e)
+        private void BtnPredat_Click(object sender, RoutedEventArgs e)
         {
-            // 1. Zistíme, ktorá záložka je momentálne otvorená
             TabItem aktivnaZalozka = (TabItem)ObchodTabs.SelectedItem;
             string nazovZalozky = aktivnaZalozka.Header.ToString();
 
             var farmar = FarmSimulator.Core.Models.SpravaFarmy.Farmar.Instance;
 
-            // 2. Podľa záložky zistíme označený riadok a vykonáme nákup
+            // --- ZELENINA ---
             if (nazovZalozky == "Zelenina")
             {
-                var vybranyRiadok = TabulkaZelenina.SelectedItem as dynamic;
-                if (vybranyRiadok != null)
+                var riadok = TabulkaZelenina.SelectedItem as dynamic;
+                if (riadok != null) { PredajStatokZFarmy(riadok.PovodnyTyp.Nazov, riadok.PredajnaCena); }
+            }
+            // --- STROMY ---
+            else if (nazovZalozky == "Stromy")
+            {
+                var riadok = TabulkaStromy.SelectedItem as dynamic;
+                if (riadok != null) { PredajStatokZFarmy(riadok.PovodnyTyp.Nazov, riadok.PredajnaCena); }
+            }
+            // --- DOBYTOK ---
+            else if (nazovZalozky == "Dobytok")
+            {
+                var riadok = TabulkaDobytok.SelectedItem as dynamic;
+                if (riadok != null) { PredajStatokZFarmy(riadok.PovodnyTyp.Nazov, riadok.PredajnaCena); }
+            }
+            // --- ATRAKČNÉ ZVIERATÁ ---
+            else if (nazovZalozky == "Atrakčné Zvieratá")
+            {
+                var riadok = TabulkaAtrakcne.SelectedItem as dynamic;
+                if (riadok != null) { PredajStatokZFarmy(riadok.PovodnyTyp.Nazov, riadok.PredajnaCena); }
+            }
+            // --- PRODUKTY (Tieto sa predávajú zo skladu, nie z farmy!) ---
+            else if (nazovZalozky == "Produkty")
+            {
+                var riadok = TabulkaProdukty.SelectedItem as dynamic;
+                if (riadok != null)
                 {
-                    var typZeleniny = vybranyRiadok.PovodnyTyp;
-                    if (farmar.Peniaze >= typZeleniny.KupnaCena)
-                    {
-                        farmar.AktualizujPeniaze(-typZeleniny.KupnaCena);
-                        MainWindow hlavneOkno = (MainWindow)this.Owner;
-                        hlavneOkno.ZmenObrazokPolicka(hlavneOkno.NajdiVolnePole(), "zelenina", typZeleniny.Nazov, 1);
-                        var novaZelenina = new FarmSimulator.Core.Properties.Zelenina(typZeleniny);
+                    var typProduktu = riadok.PovodnyTyp;
 
-                        // 4. TOTO PRIDÁME: Povieme farme, nech si ho uloží na daný index
-                        FarmSimulator.Core.Models.SpravaFarmy.Farma.Instance.PridajStat okNaPole(indexVolnehoPola, novaZelenina);
+                    // Pokúsime sa odobrať zo skladu
+                    if (FarmSimulator.Core.Models.SpravaFarmy.Sklad.Instance.OdoberProdukt(typProduktu))
+                    {
+                        farmar.AktualizujPeniaze(riadok.PredajnaCena);
+                        AktualizujTabulkuProduktov(); // Prekreslí tabuľku, aby hráč videl aktuálny stav
                     }
                     else
                     {
-                        MessageBox.Show("Nemáš dostatok peňazí na nákup!", "Nákup zlyhal", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show($"Na sklade nemáš žiadny produkt: {typProduktu.Nazov}!", "Nedostatok", MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
                 }
             }
+        }
+
+        private void AktualizujTabulkuProduktov()
+        {
+            
+        }
+
+        // POMOCNÁ METÓDA PRE PREDÁVANIE STATKOV Z FARMÁRSKEJ PLOCHY
+        private void PredajStatokZFarmy(string nazovStatku, int predajnaCena)
+        {
+            var farma = FarmSimulator.Core.Models.SpravaFarmy.Farma.Instance;
+
+            // Nájdeme prvý statok na farme, ktorý sa volá rovnako a ešte žije
+            // (Potrebujeme "using System.Linq;", ak ho hore nemáš, pridaj ho)
+            var statokNaPredaj = farma.Statky.FirstOrDefault(s => s.Nazov == nazovStatku && s.Zije);
+
+            if (statokNaPredaj != null)
+            {
+                // 1. Pripíšeme peniaze farmárovi
+                FarmSimulator.Core.Models.SpravaFarmy.Farmar.Instance.AktualizujPeniaze(predajnaCena);
+
+                // 2. KĽÚČOVÁ VEC: Povieme mu, že umrel. Toto odpáli event do MainWindow a vymaže jeho obrázok!
+                statokNaPredaj.OdkazZeSomZomrel();
+
+                // 3. Fyzicky ho vyhodíme zo zoznamu statkov
+                farma.Statky.Remove(statokNaPredaj);
+            }
+            else
+            {
+                MessageBox.Show($"Na farme momentálne nemáš žiadny živý statok typu: {nazovStatku}!", "Nedá sa predať", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+        private void BtnKupit_Click(object sender, RoutedEventArgs e)
+        {
+            TabItem aktivnaZalozka = (TabItem)ObchodTabs.SelectedItem;
+            string nazovZalozky = aktivnaZalozka.Header.ToString();
+
+            var farmar = FarmSimulator.Core.Models.SpravaFarmy.Farmar.Instance;
+            MainWindow hlavneOkno = (MainWindow)this.Owner;
+
+            // --- ZELENINA ---
+            if (nazovZalozky == "Zelenina")
+            {
+                var riadokZelenina = TabulkaZelenina.SelectedItem as dynamic;
+                if (riadokZelenina != null)
+                {
+                    var typZeleniny = riadokZelenina.PovodnyTyp;
+                    int indexVolnehoPola = hlavneOkno.NajdiVolnePole();
+
+                    if (indexVolnehoPola != -1)
+                    {
+                        if (farmar.Peniaze >= typZeleniny.KupnaCena)
+                        {
+                            farmar.AktualizujPeniaze(-typZeleniny.KupnaCena);
+                            hlavneOkno.ZmenObrazokPolicka(indexVolnehoPola, "zelenina", typZeleniny.Nazov, 1);
+
+                            var novaZelenina = new FarmSimulator.Core.Models.Statky.Rastliny.Zelenina.Zelenina(typZeleniny);
+
+                            // Prihlásenie na rast a smrť
+                            novaZelenina.ZmenaStadiaRastu += (noveStadium) =>
+                            {
+                                hlavneOkno.ZmenObrazokPolicka(indexVolnehoPola, "zelenina", typZeleniny.Nazov, noveStadium + 1);
+                            };
+                            novaZelenina.OnZomrel += () =>
+                            {
+                                hlavneOkno.VymazObrazokPolicka(indexVolnehoPola);
+                            };
+
+                            FarmSimulator.Core.Models.SpravaFarmy.Farma.Instance.PridajStatok(novaZelenina);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Nemáš dostatok peňazí na nákup!", "Nákup zlyhal", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Tvoja farma je úplne plná! Nemáš to kam zasadiť.", "Plno", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                }
+            }
+            // --- STROMY ---
+            else if (nazovZalozky == "Stromy")
+            {
+                var riadokStromy = TabulkaStromy.SelectedItem as dynamic;
+                if (riadokStromy != null)
+                {
+                    var typStromu = riadokStromy.PovodnyTyp;
+                    int indexVolnehoPola = hlavneOkno.NajdiVolnePole();
+
+                    if (indexVolnehoPola != -1)
+                    {
+                        if (farmar.Peniaze >= typStromu.KupnaCena)
+                        {
+                            farmar.AktualizujPeniaze(-typStromu.KupnaCena);
+                            hlavneOkno.ZmenObrazokPolicka(indexVolnehoPola, "stromy", typStromu.Nazov, 1);
+
+                            var novyStrom = new FarmSimulator.Core.Models.Statky.Rastliny.Stromy.Strom(typStromu);
+
+                            // Prihlásenie na rast a smrť
+                            novyStrom.ZmenaStadiaRastu += (noveStadium) =>
+                            {
+                                hlavneOkno.ZmenObrazokPolicka(indexVolnehoPola, "stromy", typStromu.Nazov, noveStadium);
+                            };
+                            novyStrom.OnZomrel += () =>
+                            {
+                                hlavneOkno.VymazObrazokPolicka(indexVolnehoPola);
+                            };
+
+                            FarmSimulator.Core.Models.SpravaFarmy.Farma.Instance.PridajStatok(novyStrom);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Nemáš dostatok peňazí na nákup!", "Nákup zlyhal", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Tvoja farma je úplne plná! Nemáš to kam zasadiť.", "Plno", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                }
+            }
+            // --- DOBYTOK ---
             else if (nazovZalozky == "Dobytok")
             {
-                var vybranyRiadok = TabulkaDobytok.SelectedItem as dynamic;
-                if (vybranyRiadok != null)
+                var riadokDobytok = TabulkaDobytok.SelectedItem as dynamic;
+                if (riadokDobytok != null)
                 {
-                    var typDobytka = vybranyRiadok.PovodnyTyp;
+                    var typDobytka = riadokDobytok.PovodnyTyp;
                     if (farmar.Peniaze >= typDobytka.KupnaCena)
                     {
                         farmar.AktualizujPeniaze(-typDobytka.KupnaCena);
-                        // Sem neskôr doplníš: farmar.KupStatok(new Dobytok(typDobytka));
+
+                        var novyDobytok = new FarmSimulator.Core.Models.Statky.Zvierata.Dobytok.Dobytok(typDobytka);
+
+                        novyDobytok.Riadok = 0;
+                        novyDobytok.Stlpec = 0;
+                        novyDobytok.MinRiadok = 0;
+                        novyDobytok.MaxRiadok = 2;
+                        novyDobytok.MinStlpec = 0;
+                        novyDobytok.MaxStlpec = 3;
+
+                        // Prihlásenie na pohyb a smrť
+                        novyDobytok.OnPohyb += (novyRiadok, novyStlpec) =>
+                        {
+                            hlavneOkno.Dispatcher.Invoke(() => {
+                                var img = hlavneOkno.NajdiObrazokZvierata(novyDobytok);
+                                if (img != null)
+                                {
+                                    Grid.SetRow(img, novyRiadok);
+                                    Grid.SetColumn(img, novyStlpec);
+                                }
+                            });
+                        };
+
+                        novyDobytok.OnZomrel += () =>
+                        {
+                            hlavneOkno.OdstranZvieratko(novyDobytok);
+                        };
+
+                        FarmSimulator.Core.Models.SpravaFarmy.Farma.Instance.PridajStatok(novyDobytok);
+                        hlavneOkno.PridajZvieraDoOhrady(novyDobytok, typDobytka.IndexOhradky);
                     }
                     else
                     {
@@ -76,17 +244,16 @@ namespace FarmSimulator.UI
                     }
                 }
             }
+            // --- ATRAKČNÉ ZVIERATÁ ---
             else if (nazovZalozky == "Atrakčné Zvieratá")
             {
-                // DOPLNENÉ: Načítanie a nákup pre Atrakčné zvieratá
-                var vybranyRiadok = TabulkaAtrakcne.SelectedItem as dynamic;
-                if (vybranyRiadok != null)
+                var riadokAtrakcne = TabulkaAtrakcne.SelectedItem as dynamic;
+                if (riadokAtrakcne != null)
                 {
-                    var typAtrakcne = vybranyRiadok.PovodnyTyp;
+                    var typAtrakcne = riadokAtrakcne.PovodnyTyp;
                     if (farmar.Peniaze >= typAtrakcne.KupnaCena)
                     {
                         farmar.AktualizujPeniaze(-typAtrakcne.KupnaCena);
-                        // Sem neskôr doplníš: farmar.KupStatok(new AtrakcneZviera(typAtrakcne));
                     }
                     else
                     {
@@ -94,102 +261,47 @@ namespace FarmSimulator.UI
                     }
                 }
             }
-            else if (nazovZalozky == "Stromy")
-            {
-                // DOPLNENÉ: Načítanie a nákup pre Stromy
-                var vybranyRiadok = TabulkaStromy.SelectedItem as dynamic;
-                if (vybranyRiadok != null)
-                {
-                    var typStromu = vybranyRiadok.PovodnyTyp;
-                    if (farmar.Peniaze >= typStromu.KupnaCena)
-                    {
-                        farmar.AktualizujPeniaze(-typStromu.KupnaCena);
-                        // Sem neskôr doplníš: farmar.KupStatok(new Strom(typStromu));
-                    }
-                    else
-                    {
-                        MessageBox.Show("Nemáš dostatok peňazí na nákup!", "Nákup zlyhal", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    }
-                }
-            }
+            // --- PRODUKTY ---
             else if (nazovZalozky == "Produkty")
             {
-                // DOPLNENÉ: Produkty sa nedajú kúpiť, tak hráča len informujeme
                 MessageBox.Show("Produkty z farmy nie je možné kupovať. Slúžia iba na predaj z tvojho skladu!", "Informácia", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
         private void NacitajVsetkyKategorie()
         {
-            // 1. DOBYTOK
             var listDobytok = new List<object>();
             foreach (var typ in TypyDobytka.GetAll())
             {
-                listDobytok.Add(new
-                {
-                    Nazov = typ.Nazov,
-                    KupnaCena = typ.KupnaCena,
-                    PredajnaCena = typ.PredajnaCena,
-                    PovodnyTyp = typ
-                });
+                listDobytok.Add(new { Nazov = typ.Nazov, KupnaCena = typ.KupnaCena, PredajnaCena = typ.PredajnaCena, PovodnyTyp = typ });
             }
             TabulkaDobytok.ItemsSource = listDobytok;
 
-            // 2. ATRAKČNÉ ZVIERATÁ
             var listAtrakcne = new List<object>();
             foreach (var typ in TypyAtrakcnychZvierat.GetAll())
             {
-                listAtrakcne.Add(new
-                {
-                    Nazov = typ.Nazov,
-                    KupnaCena = typ.KupnaCena,
-                    PredajnaCena = typ.PredajnaCena,
-                    PovodnyTyp = typ
-                });
+                listAtrakcne.Add(new { Nazov = typ.Nazov, KupnaCena = typ.KupnaCena, PredajnaCena = typ.PredajnaCena, PovodnyTyp = typ });
             }
             TabulkaAtrakcne.ItemsSource = listAtrakcne;
 
-            // 3. ZELENINA
             var listZelenina = new List<object>();
             foreach (var typ in TypyZeleniny.GetAll())
             {
-                listZelenina.Add(new
-                {
-                    Nazov = typ.Nazov,
-                    KupnaCena = typ.KupnaCena,
-                    PredajnaCena = typ.PredajnaCena,
-                    PovodnyTyp = typ
-                });
-            } // <-- TOTO TI TAM CHÝBALO
+                listZelenina.Add(new { Nazov = typ.Nazov, KupnaCena = typ.KupnaCena, PredajnaCena = typ.PredajnaCena, PovodnyTyp = typ });
+            }
             TabulkaZelenina.ItemsSource = listZelenina;
 
-            // 4. STROMY
             var listStromy = new List<object>();
             foreach (var typ in TypyStromov.GetAll())
             {
-                listStromy.Add(new
-                {
-                    Nazov = typ.Nazov,
-                    KupnaCena = typ.KupnaCena,
-                    PredajnaCena = typ.PredajnaCena,
-                    PovodnyTyp = typ
-                });
+                listStromy.Add(new { Nazov = typ.Nazov, KupnaCena = typ.KupnaCena, PredajnaCena = typ.PredajnaCena, PovodnyTyp = typ });
             }
             TabulkaStromy.ItemsSource = listStromy;
 
-            // 5. PRODUKTY (Na predaj zo skladu)
             var listProdukty = new List<object>();
             foreach (var typ in TypyProduktov.GetAll())
             {
-                listProdukty.Add(new
-                {
-                    Nazov = typ.Nazov,
-                    // Tu som dal 0, keďže produkty sa zväčša len predávajú. 
-                    // V C# musíš zachovať rovnaký typ (číslo) pre stĺpec.
-                    KupnaCena = 0,
-                    PredajnaCena = typ.PredajnaCena,
-                    PovodnyTyp = typ
-                });
+                listProdukty.Add(new { Nazov = typ.Nazov, KupnaCena = 0, PredajnaCena = typ.PredajnaCena, PovodnyTyp = typ });
             }
             TabulkaProdukty.ItemsSource = listProdukty;
         }

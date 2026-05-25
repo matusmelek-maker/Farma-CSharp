@@ -5,6 +5,7 @@ using FarmSimulator.Core.Models.Statky.Zvierata.AtrakcneZviera;
 using FarmSimulator.Core.Models.Statky.Rastliny.Stromy;
 using FarmSimulator.Core.Models.Statky.Rastliny.Zelenina;
 using FarmSimulator.Core.Models.Produkty;
+using System;
 
 namespace FarmSimulator.Core.Models.Statky
 {
@@ -23,6 +24,7 @@ namespace FarmSimulator.Core.Models.Statky
         [JsonInclude] public TypObchodnehoTovaru Typ { get; protected set; }
         [JsonInclude] public int Zivotnost { get; protected set; }
 
+        // Hlavný event, ktorý počúva UI (MainWindow)
         public event Action? OnZomrel;
 
         [JsonConstructor]
@@ -49,12 +51,18 @@ namespace FarmSimulator.Core.Models.Statky
 
         public abstract void VykonajAkcie();
 
+        // TÚTO METÓDU ZAVOLÁ ZELENINA, KEĎ VYPRODUKUJE PLODY
+        public void OdkazZeSomZomrel()
+        {
+            Zije = false;
+            OnZomrel?.Invoke();
+        }
+
         public virtual bool Zomri()
         {
             if (Vek >= Zivotnost || !Zije)
             {
                 Zije = false;
-
                 OnZomrel?.Invoke();
                 return true;
             }

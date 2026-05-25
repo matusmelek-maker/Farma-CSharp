@@ -1,8 +1,8 @@
 ﻿using FarmSimulator.Core.Models.SpravaFarmy;
 using FarmSimulator.Core.SpracovanieDat;
 using FarmSimulator.Core.Properties.Dobytok;
-using FarmSimulator.Core.Enums.Stromy;
-using FarmSimulator.Core.Enums.Zelenina;
+using FarmSimulator.Core.Properties.Stromy;
+using FarmSimulator.Core.Properties.Zelenina;
 using FarmSimulator.Core.Models.Statky.Zvierata.Dobytok;
 using FarmSimulator.Core.Models.Statky.Rastliny.Stromy;
 using FarmSimulator.Core.Models.Statky.Rastliny.Zelenina;
